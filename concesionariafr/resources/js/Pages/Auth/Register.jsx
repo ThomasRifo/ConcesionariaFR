@@ -27,7 +27,7 @@ export default function Register() {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="name" value="Nombre" />
 
                     <TextInput
                         id="name"
@@ -41,6 +41,23 @@ export default function Register() {
                     />
 
                     <InputError message={errors.name} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="lastname" value="Apellido" />
+
+                    <TextInput
+                        id="lastname"
+                        name="lastname"
+                        value={data.name}
+                        className="mt-1 block w-full"
+                        autoComplete="name"
+                        isFocused={true}
+                        onChange={(e) => setData('lastname', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.lastname} className="mt-2" />
                 </div>
 
                 <div className="mt-4">
