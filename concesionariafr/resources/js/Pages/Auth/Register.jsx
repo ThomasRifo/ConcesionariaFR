@@ -8,9 +8,12 @@ import { Head, Link, useForm } from '@inertiajs/react';
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
+        lastname: '',
         email: '',
         password: '',
         password_confirmation: '',
+        idRol: 3,  // Rol predeterminado
+        activo: true,  // Activo predeterminado
     });
 
     const submit = (e) => {
@@ -49,10 +52,9 @@ export default function Register() {
                     <TextInput
                         id="lastname"
                         name="lastname"
-                        value={data.name}
+                        value={data.lastname}
                         className="mt-1 block w-full"
                         autoComplete="name"
-                        isFocused={true}
                         onChange={(e) => setData('lastname', e.target.value)}
                         required
                     />
