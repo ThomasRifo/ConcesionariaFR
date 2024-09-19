@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RegistrarEmpleadoController;
 use App\Http\Controllers\VehiculoController;
+use App\Models\estadoVehiculo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,7 +20,10 @@ Route::get('/', function () {
 
 // Ruta dashboard
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('cliente')) {
+        return Inertia::render('Dashboard');
+    }
+    return redirect()->route('vehiculos.index')->with('error', 'No tienes acceso a esta sección.');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rutas protegidas para perfiles
@@ -31,5 +36,7 @@ Route::middleware('auth')->group(function () {
 // Rutas para vehículos
 Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
 
-// Rutas de autenticación
+Route::get('/registrarEmpleados', [RegistrarEmpleadoController::class, 'create'])->name('registeredEmployed');
+Route::post('/registrarEmpleados', [RegistrarEmpleadoController::class, 'store']);
+
 require __DIR__.'/auth.php';

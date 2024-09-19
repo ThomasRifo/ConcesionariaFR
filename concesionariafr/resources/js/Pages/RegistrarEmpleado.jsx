@@ -18,15 +18,16 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('register'), {
+        post(route('chupapija'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
     return (
         <GuestLayout>
-            <Head title="Register" />
+            <Head title="Registrar Empleado" />
 
+            <h2 className='m-5 p-5 text-center text-2xl text-orange-800'>Registrar un empleado</h2>
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Nombre" />
@@ -34,6 +35,7 @@ export default function Register() {
                     <TextInput
                         id="name"
                         name="name"
+                        placeholder="Nombre del empleado"
                         value={data.name}
                         className="mt-1 block w-full"
                         autoComplete="name"
@@ -51,6 +53,7 @@ export default function Register() {
                     <TextInput
                         id="lastname"
                         name="lastname"
+                        placeholder="Nombre del empleado"
                         value={data.lastname}
                         className="mt-1 block w-full"
                         autoComplete="name"
@@ -62,12 +65,43 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
+                    <InputLabel htmlFor="dni" value="DNI" />
+
+                    <TextInput
+                        id="dni"
+                        name="dni"
+                        value={data.dni}
+                        className="mt-1 block w-full"
+                        onChange={(e) => setData('dni', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.dni} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="phone" value="Teléfono" />
+
+                    <TextInput
+                        id="phone"
+                        name="phone"
+                        value={data.phone}
+                        className="mt-1 block w-full"
+                        onChange={(e) => setData('phone', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.phone} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
                     <InputLabel htmlFor="email" value="Email" />
 
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
+                        
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
@@ -78,53 +112,15 @@ export default function Register() {
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
 
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password_confirmation', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password_confirmation} className="mt-2" />
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+               
+                <div className="flex items-center justify-center mt-4">
+                    <PrimaryButton disabled={processing}>
+                        Registrar Empleado
                     </PrimaryButton>
                 </div>
             </form>
         </GuestLayout>
     );
 }
+
