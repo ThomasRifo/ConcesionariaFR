@@ -7,6 +7,7 @@ use App\Models\estadoVehiculo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 // Ruta raíz (inicio)
 Route::get('/', function () {
@@ -23,7 +24,7 @@ Route::get('/dashboard', function () {
     if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('cliente')) {
         return Inertia::render('Dashboard');
     }
-    return redirect()->route('vehiculos.index')->with('error', 'No tienes acceso a esta sección.');
+    return Inertia::render('register') ;
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rutas protegidas para perfiles
@@ -36,7 +37,10 @@ Route::middleware('auth')->group(function () {
 // Rutas para vehículos
 Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
 
-Route::get('/registrarEmpleados', [RegistrarEmpleadoController::class, 'create'])->name('registeredEmployed');
-Route::post('/registrarEmpleados', [RegistrarEmpleadoController::class, 'store']);
+
+Route::group(['middleware' => ['role:admin']], function () {
+    Route::get('/registrarEmpleados', [RegistrarEmpleadoController::class, 'create'])->name('registeredEmployed');
+    Route::post('/registrarEmpleados', [RegistrarEmpleadoController::class, 'store']);
+});
 
 require __DIR__.'/auth.php';

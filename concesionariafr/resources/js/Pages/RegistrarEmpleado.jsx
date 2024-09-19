@@ -3,26 +3,34 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function Register() {
+
+
+    const { auth } = usePage().props; 
+    const { user } = auth;
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         lastname: '',
         email: '',
         password: '',
         password_confirmation: '',
-        activo: true,  // Activo predeterminado
+        activo: true, 
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('chupapija'), {
+        post(route('registeredEmployed'), {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
 
+
+
+    if (auth.roles.includes('admin')) { 
     return (
         <GuestLayout>
             <Head title="Registrar Empleado" />
@@ -101,7 +109,6 @@ export default function Register() {
                         id="email"
                         type="email"
                         name="email"
-                        
                         value={data.email}
                         className="mt-1 block w-full"
                         autoComplete="username"
@@ -112,8 +119,6 @@ export default function Register() {
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-
-               
                 <div className="flex items-center justify-center mt-4">
                     <PrimaryButton disabled={processing}>
                         Registrar Empleado
@@ -122,5 +127,13 @@ export default function Register() {
             </form>
         </GuestLayout>
     );
+    }
+    return (
+        <GuestLayout>
+            <Head title="Acceso Denegado" />
+            <div className="text-center mt-5 text-red-600">
+                No tienes permisos para acceder a esta página.
+            </div>
+        </GuestLayout>
+    );
 }
-
