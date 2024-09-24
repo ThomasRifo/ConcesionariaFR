@@ -1,15 +1,16 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+import GuestLayout2 from '@/Layouts/GuestLayout2';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function Register() {
 
 
-    const { auth } = usePage().props; 
-    const { user } = auth;
+    const user = usePage().props.auth.user;
+    const isAdmin = user.roles.some((role) => role.name == "admin");
 
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
@@ -30,11 +31,15 @@ export default function Register() {
 
 
 
-    if (auth.roles.includes('admin')) { 
+    if (isAdmin) { 
     return (
-        <GuestLayout>
-            <Head title="Registrar Empleado" />
 
+                
+        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 leading-tight justify-start">Registrar Empleado</h2>}
+        >
+    <GuestLayout2 >
+            <Head title="Registrar Empleado" />
+        
             <h2 className='m-5 p-5 text-center text-2xl text-orange-800'>Registrar un empleado</h2>
             <form onSubmit={submit}>
                 <div>
@@ -125,15 +130,18 @@ export default function Register() {
                     </PrimaryButton>
                 </div>
             </form>
-        </GuestLayout>
+            </GuestLayout2>
+        </AuthenticatedLayout>
     );
     }
     return (
+        <AuthenticatedLayout>
         <GuestLayout>
             <Head title="Acceso Denegado" />
             <div className="text-center mt-5 text-red-600">
                 No tienes permisos para acceder a esta página.
             </div>
         </GuestLayout>
+        </AuthenticatedLayout>
     );
 }

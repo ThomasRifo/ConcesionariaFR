@@ -4,7 +4,7 @@ import { Transition } from '@headlessui/react';
 
 const DropDownContext = createContext();
 
-const Dropdown = ({ children }) => {
+const Dropdown = ({ children, className = '' }) => {
     const [open, setOpen] = useState(false);
 
     const toggleOpen = () => {
@@ -13,17 +13,19 @@ const Dropdown = ({ children }) => {
 
     return (
         <DropDownContext.Provider value={{ open, setOpen, toggleOpen }}>
-            <div className="relative">{children}</div>
+            <div className={`relative ${className}`}>{children}</div> {/* Aquí se añade className */}
         </DropDownContext.Provider>
     );
 };
 
-const Trigger = ({ children }) => {
+const Trigger = ({ children, className = '' }) => {
     const { open, setOpen, toggleOpen } = useContext(DropDownContext);
 
     return (
         <>
-            <div onClick={toggleOpen}>{children}</div>
+            <div onClick={toggleOpen} className={className}> {/* Aquí se añade className */}
+                {children}
+            </div>
 
             {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)}></div>}
         </>

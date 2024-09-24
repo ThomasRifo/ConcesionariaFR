@@ -15,15 +15,21 @@ use Illuminate\Support\Str;
 
 
 
-class RegistrarEmpleadoController extends Controller
+class EmpleadoController extends Controller
 {
     /**
      * Display the registration view.
      */
     public function create(): Response
     {
-        return Inertia::render('RegistrarEmpleado');
+        return Inertia::render('Empleados/RegistrarEmpleado');
+
+
     }
+    public function edit(Request $request): Response {
+        return Inertia::render('Empleados/Empleados');
+    }
+
 
     /**
      * Handle an incoming registration request.

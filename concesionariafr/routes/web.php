@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RegistrarEmpleadoController;
+use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\VehiculoController;
 use App\Models\estadoVehiculo;
 use Illuminate\Foundation\Application;
@@ -21,14 +21,14 @@ Route::get('/', function () {
 
 // Ruta dashboard
 Route::get('/dashboard', function () {
-    if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('cliente')) {
+    if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('empleado') || auth()->user()->hasRole('cliente')) {
         return Inertia::render('Dashboard');
     }
     return Inertia::render('register') ;
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rutas protegidas para perfiles
-Route::middleware('auth')->group(function () {
+Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -39,8 +39,10 @@ Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.
 
 
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/registrarEmpleados', [RegistrarEmpleadoController::class, 'create'])->name('registeredEmployed');
-    Route::post('/registrarEmpleados', [RegistrarEmpleadoController::class, 'store']);
+    Route::get('/Empleados/registrar-empleados', [EmpleadoController::class, 'create'])->name('registeredEmployed');
+    Route::post('/Empleados/registrar-empleados', [EmpleadoController::class, 'store']);
+    Route::get('/Empleados/empleados', [EmpleadoController::class, 'edit'])->name('empleados.edit');
+    Route::patch('/Empleados/empleados', [EmpleadoController::class, 'update'])->name('empleados.update');
 });
 
 require __DIR__.'/auth.php';

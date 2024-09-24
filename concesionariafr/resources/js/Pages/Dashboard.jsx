@@ -2,7 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
 
 export default function Dashboard() {
-    const { auth } = usePage().props;
+    const user = usePage().props.auth.user;
+    const isAdmin = user.roles.some(role => role.name == 'admin');
     return (
         <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
@@ -15,7 +16,7 @@ export default function Dashboard() {
                         <div className="p-6 text-gray-900">You're logged in!</div>
                     </div>
 
-                    {auth.roles.includes('admin')  && (
+                    {isAdmin && (
                             <div>Bienvenido, Admin! </div>
                         )}
                 </div>
