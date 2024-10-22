@@ -77,31 +77,17 @@ export default function Authenticated({ header, children }) {
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
                                                     href={route(
-                                                        "empleados.edit"
+                                                        "empleados.index"
                                                     )}
                                                     className={
                                                         route().current(
-                                                            "empleados.edit"
+                                                            "empleados.index"
                                                         )
                                                             ? "border-b-2  bg-gray-200 text-indigo-800 focus:border-indigo-700"
                                                             : "focus:border-b-2 border-indigo-700"
                                                     }
                                                 >
-                                                    Ver empleados
-                                                </Dropdown.Link>
-                                                <Dropdown.Link
-                                                    href={route(
-                                                        "registeredEmployed"
-                                                    )}
-                                                    className={
-                                                        route().current(
-                                                            "registeredEmployed"
-                                                        )
-                                                            ? "border-b-2  bg-gray-200 text-indigo-800 focus:border-indigo-700"
-                                                            : "focus:border-b-2 border-indigo-700"
-                                                    }
-                                                >
-                                                    Agregar empleado
+                                                    Registros
                                                 </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>

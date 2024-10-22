@@ -13,63 +13,16 @@ use Inertia\Response;
 class VehiculoController extends Controller
 {
 
-public function index(Request $request)
+public function index()
 {
-    // Obtén los valores de los filtros y la búsqueda desde la solicitud
-    $searchTerm = $request->input('search');
-    $selectedMarcas = $request->input('marcas', []);
-    $selectedModelos = $request->input('modelos', []);
-    $selectedCategoria = $request->input('categoria');
-    $selectedCombustible = $request->input('combustible');
-    $selectedTransmision = $request->input('transmision');
-
-    // Consulta base de vehículos
-    $query = Vehiculo::query();
-
-    // Filtrar por búsqueda
-    if ($searchTerm) {
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('marca', 'like', "%{$searchTerm}%")
-              ->orWhere('modelo', 'like', "%{$searchTerm}%");
-        });
-    }
-
-    // Filtrar por marcas seleccionadas
-    if (!empty($selectedMarcas)) {
-        $query->whereIn('marca', $selectedMarcas);
-    }
-
-    // Filtrar por modelos seleccionados
-    if (!empty($selectedModelos)) {
-        $query->whereIn('modelo', $selectedModelos);
-    }
-
-    // Filtrar por categoría
-    if ($selectedCategoria) {
-        $query->where('idCategoria', $selectedCategoria);
-    }
-
-    // Filtrar por combustible
-    if ($selectedCombustible) {
-        $query->where('idCombustible', $selectedCombustible);
-    }
-
-    // Filtrar por transmisión
-    if ($selectedTransmision) {
-        $query->where('idTransmision', $selectedTransmision);
-    }
-
-    // Obtener los vehículos filtrados
-    $vehiculos = $query->get();
-
-    // Obtener marcas, modelos, categorías, etc. para los filtros
+    
+    $vehiculos = Vehiculo::all();
     $marcas = Vehiculo::select('marca')->distinct()->get();
     $modelos = Vehiculo::select('modelo')->distinct()->get();
     $categorias = categoriaVehiculo::all();
     $combustibles = Combustible::all();
     $transmisiones = Transmision::all();
 
-    // Devolver los resultados con Inertia
     return Inertia::render('Vehiculos/Vehiculos', [
         'vehiculos' => $vehiculos,
         'marcas' => $marcas,
