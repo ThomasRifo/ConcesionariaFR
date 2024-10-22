@@ -1,3 +1,4 @@
+import NavLink from '@/components/NavLink';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, usePage } from '@inertiajs/react';
 
@@ -17,10 +18,20 @@ export default function Dashboard() {
                     </div>
 
                     {isAdmin && (
-                            <div>Bienvenido, Admin! </div>
+                            <div>Bienvenido, Admin! 
+                            <NavLink
+                                    href={route("registeredEmployed")}
+                                    active={route().current("calendar.index")}
+                                >
+                                    Calendario
+                                </NavLink>
+                            </div>
                         )}
                 </div>
             </div>
+
+
         </AuthenticatedLayout>
+        
     );
 }

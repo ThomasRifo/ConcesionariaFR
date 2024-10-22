@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class EstadoEvento extends Model
 {
-    use HasFactory;
+    protected $table = 'estado_evento';  // Nombre correcto de la tabla
 }

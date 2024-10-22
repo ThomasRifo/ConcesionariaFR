@@ -147,6 +147,14 @@ export default function Authenticated({ header, children }) {
                                         </Dropdown>
                                     </div>
                                 )}
+                                {(isAdmin || isEmpleado) && (
+                                <NavLink
+                                    href={route("agenda.index")}
+                                    active={route().current("agenda.index")}
+                                >
+                                    Calendario
+                                </NavLink>
+                                )}
 
                                 {/* <div className="hidden sm:flex sm:items-center sm:ms-6">
                             <div className="ms-3 relative">

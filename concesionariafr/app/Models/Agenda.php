@@ -9,39 +9,37 @@ class Agenda extends Model
 {
     use HasFactory;
 
-    // Nombre de la tabla en la base de datos
     protected $table = 'agenda';
 
-    // Atributos que se pueden asignar masivamente
     protected $fillable = [
+        'titulo',
+        'descripcion',
+        'fecha',
         'idTipoEvento',
         'idEmpleado',
         'idCliente',
         'idEstado',
-        'titulo',
-        'fecha',
-        'descripcion',
     ];
 
-    // Definición de la relación con el modelo TipoEvento
-    public function tipoEvento()
-    {
-        return $this->belongsTo(TipoEvento::class, 'idTipoEvento');
-    }
-
-    // Definición de la relación con el modelo User (Empleado)
+    // Relación con el empleado (usuario)
     public function empleado()
     {
         return $this->belongsTo(User::class, 'idEmpleado');
     }
 
-    // Definición de la relación con el modelo User (Cliente)
+    // Relación con el cliente (usuario)
     public function cliente()
     {
         return $this->belongsTo(User::class, 'idCliente');
     }
 
-    // Definición de la relación con el modelo Estado
+    // Relación con el tipo de evento
+    public function tipoEvento()
+    {
+        return $this->belongsTo(TipoEvento::class, 'idTipoEvento');
+    }
+
+    // Relación con el estado del evento
     public function estado()
     {
         return $this->belongsTo(EstadoEvento::class, 'idEstado');
