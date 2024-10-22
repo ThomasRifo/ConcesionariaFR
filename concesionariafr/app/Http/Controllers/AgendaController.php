@@ -18,39 +18,37 @@ class AgendaController extends Controller
 
         $empleadoId = Auth::user()->id;
         // Obtener eventos y darles formato adecuado
-        $agendas = Agenda::with('tipoEvento', 'empleado', 'cliente', 'estado',)
-            ->whereIn('idEmpleado', [$empleadoId, 1])
-            ->orderBy('fecha', 'asc')
-            ->get()
-            ->map(function ($agenda) {
-                // Aseguramos que 'fecha' sea un objeto Carbon
-                $start = Carbon::parse($agenda->fecha); // Convertir a Carbon
-                $end = $start->copy(); // Copiamos el objeto start para modificarlo
+        $agendas = Agenda::with('tipoEvento', 'empleado', 'cliente', 'estado') // Sin 'idEstado', ya que ya está incluido en la relación 'estado'
+    ->whereIn('idEmpleado', [$empleadoId, 1])
+    ->orderBy('fecha', 'asc')
+    ->get()
+    ->map(function ($agenda) {
+        $start = Carbon::parse($agenda->fecha);
+        $end = $start->copy();
 
-                // Ajustar la duración según el tipo de evento
-                switch ($agenda->tipoEvento->id) {
-                    case 1: // Por ejemplo, evento tipo 1
-                        $end->addHours(0.5); // 1 hora
-                        break;
-                    case 2: // Evento tipo 2
-                        $end->addHours(1); // 2 horas
-                        break;
-                }
+        switch ($agenda->tipoEvento->id) {
+            case 1:
+                $end->addHours(1);
+                break;
+            case 2:
+                $end->addHours(1.5);
+                break;
+        }
 
-
-                return [
-                    'id' => $agenda->id,
-                    'start' => $start->format('Y-m-d\TH:i:s'), // Formato para el calendario
-                    'end' => $end->format('Y-m-d\TH:i:s'), // Formato para el calendario
-                    'title' => $agenda->titulo,
-                    'descripcion' => $agenda->descripcion,
-                ];
-            });
+        return [
+            'id' => $agenda->id,
+            'start' => $start->format('Y-m-d\TH:i:s'),
+            'end' => $end->format('Y-m-d\TH:i:s'),
+            'title' => $agenda->titulo,
+            'descripcion' => $agenda->descripcion,
+            'idEstado' => $agenda->estado->id ?? null, // Aquí tomamos el id del estado
+        ];
+    });
 
         $tiposEvento = TipoEvento::all();
 
         return Inertia::render('Agenda/Agenda', [
-            'agendas' => $agendas, // Pasamos los eventos formateados
+            'agendas' => $agendas,
             'tiposEvento' => $tiposEvento,
         ]);
     }
@@ -82,6 +80,33 @@ class AgendaController extends Controller
 
         // Redirigir al dashboard o donde necesites
         return Inertia::render('Agenda')->with('success', 'Evento creado con éxito.');
+    }
+
+    public function storeCita(Request $request)
+    {
+        // Validar los campos
+        $request->validate([
+            'fecha' => 'required|date',
+            'idCliente' => 'required|exists:users,id',
+            'idEmpleado'=> 'required|exists:users,id',
+            'idTipoEvento' => 'required|exists:tipo_evento,id',
+            'idEstado' => 'required|exists:estado_evento,id',
+            'titulo' => 'required|string|max:255', // Agregar validación para el título
+            'descripcion' => 'required|string|max:1000', // Agregar validación para la descripción
+        ]);
+    
+        // Crear el evento en la tabla 'agenda'
+        $agenda = Agenda::create([
+            'titulo' => $request->titulo, // Usar el título del formulario
+            'descripcion' => $request->descripcion, // Usar la descripción del formulario
+            'fecha' => $request->fecha,
+            'idTipoEvento' => $request->idTipoEvento,
+            'idEmpleado' => $request->idEmpleado, // Cambia esto si necesitas usar otro id
+            'idCliente' => Auth::user()->id,
+            'idEstado' => $request->idEstado,
+        ]);
+    
+        return Inertia::render('vehiculos.index')->with('success', 'Evento creado con éxito.');
     }
 
     public function buscarClientes(Request $request)

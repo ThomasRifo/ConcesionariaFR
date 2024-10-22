@@ -47,11 +47,15 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
     Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda.index');
     Route::get('/agenda/create', [AgendaController::class, 'create'])->name('agenda.create');
     Route::post('/agenda/store', [AgendaController::class, 'store'])->name('agenda.store');
+
+
     Route::put('/agenda/update/{id}', [AgendaController::class, 'update'])->name('agenda.update');
     Route::delete('/agenda/delete/{id}', [AgendaController::class, 'delete'])->name('agenda.delete');
     Route::get('/agenda/buscar-clientes', [AgendaController::class, 'buscarClientes']);
 
 });
+
+Route::post('/agenda/storeCita', [AgendaController::class, 'storeCita'])->name('agenda.storeCita')->middleware('role:cliente');;
 
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/Empleados/registrar-empleados', [EmpleadoController::class, 'create'])->name('registeredEmployed');

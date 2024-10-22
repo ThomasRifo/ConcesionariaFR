@@ -25,9 +25,11 @@ export default function FormAgenda({ currentEvent, closeModal }) {
         e.preventDefault();
 
         const newEvent = {
-            titulo: data.titulo,
+            id: currentEvent ? currentEvent.id : null,
+            title: data.titulo,
             descripcion: data.descripcion,
-            fecha: data.fecha,
+            start: data.fecha,
+            end: dayjs(data.fecha).add(1, "hour").format("YYYY-MM-DDTHH:mm"), // Duración de 1 hora
             idCliente: data.idCliente,
             idTipoEvento: data.idTipoEvento,
             idEmpleado: data.idEmpleado,
@@ -35,25 +37,28 @@ export default function FormAgenda({ currentEvent, closeModal }) {
         };
 
         if (currentEvent && currentEvent.id) {
-            // Si es un evento existente, actualizarlo usando 'put'
+            // Actualizar evento
             put(route("agenda.update", currentEvent.id), {
                 data: newEvent,
                 onFinish: () => {
                     reset();
+                    handleEventChange(newEvent); // Actualiza el estado en el padre
                     closeModal();
                 },
             });
         } else {
-            // Si es un nuevo evento, crearlo usando 'post'
+            // Crear nuevo evento
             post(route("agenda.store"), {
                 data: newEvent,
                 onFinish: () => {
                     reset();
+                    handleEventChange(newEvent); // Añadir nuevo evento al estado
                     closeModal();
                 },
             });
         }
     };
+
 
 const deleteEvent = () => {
     if (currentEvent && currentEvent.id) {

@@ -34,15 +34,33 @@ export default function Agenda() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentEvent, setCurrentEvent] = useState(null);
 
-    const events = usePage().props.agendas.map((event) => ({
-        id: event.id,
-        start: dayjs(event.start).toDate(),
-        end: dayjs(event.end).toDate(),
-        title: event.title,
-        descripcion: event.descripcion,
-        idEstado: event.idEstado,
-
-    }));
+    const [events, setEvents] = useState(
+        usePage().props.agendas.map((event) => ({
+            id: event.id,
+            start: dayjs(event.start).toDate(),
+            end: dayjs(event.end).toDate(),
+            title: event.title,
+            descripcion: event.descripcion,
+            idEstado: event.idEstado,
+        }))
+    );
+    
+    const handleEventChange = (newEvent, isDelete = false) => {
+        if (isDelete) {
+            setEvents((prevEvents) => prevEvents.filter((event) => event.id !== newEvent.id));
+        } else {
+            setEvents((prevEvents) => {
+                const existingEvent = prevEvents.find((event) => event.id === newEvent.id);
+                if (existingEvent) {
+                    return prevEvents.map((event) =>
+                        event.id === newEvent.id ? newEvent : event
+                    );
+                } else {
+                    return [...prevEvents, newEvent];
+                }
+            });
+        }
+    };
 
     const handleSelectSlot = (slotInfo) => {
         const now = new Date();
@@ -86,31 +104,30 @@ export default function Agenda() {
         return {};
     };
 
-    console.log(events)
     const eventPropGetter = (event) => {
         let backgroundColor;
         let color;
 
         switch (event.idEstado) {
-            case 5: // Estado 3
-            backgroundColor = "lightblue"; // Color para estado 3
-            color = "black"; // Color del texto
+            case 1: 
+            backgroundColor = "lightblue"; // 
+            color = "black"; 
             break;
-            case 2: // Estado 3
-            backgroundColor = "lightblue"; // Color para estado 3
-            color = "black"; // Color del texto
+            case 2: 
+            backgroundColor = "lightblue"; // 
+            color = "black"; 
             break;
-            case 3: // Estado 1
-                backgroundColor = "lightgreen"; // Color para estado 1
-                color = "black"; // Color del texto
+            case 3: 
+                backgroundColor = "lightgreen"; 
+                color = "black"; 
                 break;
-            case 4: // Estado 2
-                backgroundColor = "lightcoral"; // Color para estado 2
-                color = "white"; // Color del texto
+            case 4: 
+                backgroundColor = "lightcoral"; 
+                color = "white"; 
                 break;
-            case 5: // Estado 3
-                backgroundColor = "lightblue"; // Color para estado 3
-                color = "black"; // Color del texto
+            case 5: 
+                backgroundColor = "lightblue"; 
+                color = "black"; 
                 break;
         }
 
@@ -118,10 +135,10 @@ export default function Agenda() {
             style: {
                 backgroundColor,
                 color,
-                borderRadius: '5px', // Opcional: para bordes redondeados
-                border: 'none', // Opcional: para quitar el borde
-                padding: '10px', // Opcional: para padding interno
-                display: 'block', // Asegúrate de que el evento se muestre como bloque
+                borderRadius: '5px', 
+                border: 'none', 
+                padding: '10px', 
+                display: 'block', 
             },
         };
     };
@@ -151,7 +168,7 @@ export default function Agenda() {
                         events={events}
                         defaultView={"week"}
                         dayPropGetter={dayPropGetter}
-                        eventPropGetter={eventPropGetter} // Aquí se agrega
+                        eventPropGetter={eventPropGetter}
                         min={dayjs().set("hour", 8).set("minute", 0).toDate()}
                         max={dayjs().set("hour", 20).set("minute", 0).toDate()}
                         formats={{
@@ -184,6 +201,7 @@ export default function Agenda() {
                 <FormAgenda
                     currentEvent={currentEvent}
                     closeModal={closeModal}
+                    handleEventChange={handleEventChange} 
                 />
             </ReactModal>
         </AuthenticatedLayout>

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Head } from "@inertiajs/react";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import Modal from 'react-modal'; // Asegúrate de que esta biblioteca está instalada
+import AgendarCita from '../Agenda/AgendarCita'; // Ajusta la ruta según tu estructura de carpetas
 
 const Vehiculos = ({ vehiculos, marcas, modelos, categorias, combustibles, transmisiones }) => {
     const [filteredVehiculos, setFilteredVehiculos] = useState(vehiculos);
@@ -10,8 +12,9 @@ const Vehiculos = ({ vehiculos, marcas, modelos, categorias, combustibles, trans
     const [selectedCategoria, setSelectedCategoria] = useState('');
     const [selectedCombustible, setSelectedCombustible] = useState('');
     const [selectedTransmision, setSelectedTransmision] = useState('');
+    const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para controlar el modal
+    const [selectedVehiculo, setSelectedVehiculo] = useState(null); // Vehículo seleccionado para agendar cita
 
-    // Actualiza los vehículos filtrados en función de los términos de búsqueda y los filtros seleccionados
     useEffect(() => {
         let filtered = vehiculos;
 
@@ -51,7 +54,6 @@ const Vehiculos = ({ vehiculos, marcas, modelos, categorias, combustibles, trans
         setFilteredVehiculos(filtered);
     }, [searchTerm, selectedMarcas, selectedModelos, selectedCategoria, selectedCombustible, selectedTransmision, vehiculos]);
 
-    // Manejo de los checkbox
     const handleCheckboxChange = (e, setStateFunction, selectedItems) => {
         const value = e.target.value;
         const checked = e.target.checked;
@@ -61,6 +63,16 @@ const Vehiculos = ({ vehiculos, marcas, modelos, categorias, combustibles, trans
         } else {
             setStateFunction(selectedItems.filter((item) => item !== value));
         }
+    };
+
+    const openModal = (vehiculo) => {
+        setSelectedVehiculo(vehiculo);
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setSelectedVehiculo(null);
     };
 
     return (
@@ -164,12 +176,29 @@ const Vehiculos = ({ vehiculos, marcas, modelos, categorias, combustibles, trans
                             <h3 className="text-xl">{vehiculo.marca} {vehiculo.modelo}</h3>
                             <p>Año: {vehiculo.anio}</p>
                             <p>Precio: {vehiculo.precio}</p>
+                            <button
+                                className="mt-2 bg-blue-500 text-white p-2 rounded"
+                                onClick={() => openModal(vehiculo)}
+                            >
+                                Agendar Cita
+                            </button>
                         </div>
                     ))
                 ) : (
                     <p>No se encontraron vehículos.</p>
                 )}
             </div>
+
+            {/* Modal para Agendar Cita */}
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Agendar Cita"
+                ariaHideApp={false} // Esto es necesario para que funcione el modal en algunos casos
+            >
+                <h2>Agendar Cita para {selectedVehiculo ? `${selectedVehiculo.marca} ${selectedVehiculo.modelo}` : ''}</h2>
+                <AgendarCita vehiculo={selectedVehiculo} closeModal={closeModal} />
+            </Modal>
         </div>
     );
 };
