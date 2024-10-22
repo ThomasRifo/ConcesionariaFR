@@ -38,6 +38,8 @@ Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
 
 // Rutas para vehículos
 Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
+Route::post('/vehiculos', [VehiculoController::class, 'store'])->name('vehiculos.store');
+Route::get('/vehiculos/create', [VehiculoController::class, 'create'])->name('vehiculos.create');
 
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {

@@ -123,26 +123,23 @@ export default function Authenticated({ header, children }) {
 
                                             <Dropdown.Content>
                                                 <Dropdown.Link
-                                                    href={route("profile.edit")}
+                                                    href={route("vehiculos.create")}
+                                                    className={
+                                                        route().current(
+                                                            "vehiculos.create"
+                                                        )
+                                                            ? "border-b-2  bg-gray-200 text-indigo-800 focus:border-indigo-700"
+                                                            : "focus:border-b-2 border-indigo-700"
+                                                    }
                                                 >
                                                     Agregar vehículo
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
-                                                    href={route("profile.edit")}
-                                                    method="post"
+                                                    href={route("vehiculos.index")}
                                                     as="button"
                                                 >
                                                     Ver vehículos
                                                 </Dropdown.Link>
-                                                {(isAdmin) && (
-                                                <Dropdown.Link
-                                                    href={route("profile.edit")}
-                                                    method="post"
-                                                    as="button"
-                                                >
-                                                    Agregar categoría
-                                                </Dropdown.Link>
-                                                )}
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>
