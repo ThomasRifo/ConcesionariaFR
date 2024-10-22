@@ -20,14 +20,25 @@ class EmpleadoController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): Response
+    public function index()
+    {
+
+        $empleados = User::role('empleado')->with('ventas')->get();
+
+        return Inertia::render('Empleados/Empleados', [
+            'empleados' => $empleados
+        ]);
+
+    }
+    
+     public function create(): Response
     {
         return Inertia::render('Empleados/RegistrarEmpleado');
 
-
     }
-    public function edit(Request $request): Response {
-        return Inertia::render('Empleados/Empleados');
+
+    public function edit(Request $request){
+        
     }
 
 
