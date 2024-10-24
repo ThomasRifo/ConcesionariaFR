@@ -7,7 +7,7 @@ export default function Dashboard() {
     const isAdmin = user.roles.some(role => role.name == 'admin');
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Bienvenido</h2>}
         >
             <Head title="Dashboard" />
 
@@ -16,17 +16,6 @@ export default function Dashboard() {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">You're logged in!</div>
                     </div>
-
-                    {isAdmin && (
-                            <div>Bienvenido, Admin! 
-                            <NavLink
-                                    href={route("registeredEmployed")}
-                                    active={route().current("calendar.index")}
-                                >
-                                    Calendario
-                                </NavLink>
-                            </div>
-                        )}
                 </div>
             </div>
 

@@ -23,7 +23,7 @@ const Empleados = ({ empleados }) => {
                                 <ul>
                                     {empleado.ventas.map((venta) => (
                                         <li key={venta.id}>
-                                            <p>ID Vehículo: {venta.idVehiculo}</p>
+                                            <p>Vehículo: {venta.idVehiculo}</p>
                                             <p>Monto Total: {venta.montoTotal}</p>
                                             <p>Fecha: {venta.fechaVenta}</p>
                                         </li>

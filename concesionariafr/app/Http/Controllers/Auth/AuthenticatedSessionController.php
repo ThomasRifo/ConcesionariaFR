@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
+
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -29,12 +30,19 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+    // Verificar si el usuario autenticado tiene el rol de 'cliente'
+    if (auth()->user()->hasRole('cliente')) {
+        return redirect()->route('vehiculos.index');
     }
+
+    // Si no es cliente, redirigir al dashboard
+    return redirect()->intended(route('dashboard'));
+    }
+
 
     /**
      * Destroy an authenticated session.
