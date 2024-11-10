@@ -37,12 +37,12 @@ Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
 });
 
 // Rutas para vehículos
-Route::get('/Vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
+Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {
 
-    Route::post('/Vehiculos/registrar-vehiculo', [VehiculoController::class, 'store'])->name('vehiculos.store');
-    Route::get('/Vehiculos/create', [VehiculoController::class, 'create'])->name('vehiculos.create');
+    Route::post('/vehiculos/registrar-vehiculo', [VehiculoController::class, 'store'])->name('vehiculos.store');
+    Route::get('/vehiculos/create', [VehiculoController::class, 'create'])->name('vehiculos.create');
 
 });
 
