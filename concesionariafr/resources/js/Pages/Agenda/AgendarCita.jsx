@@ -9,11 +9,15 @@ export default function AgendarCita({ closeModal, vehiculo }) {
     const { props } = usePage();
     const user = props.auth.user;
 
+    if (!user) {
+        window.location.href = route("login"); // Redirige al login si el usuario no está autenticado
+        return null; // Evita renderizar el componente hasta que la redirección se complete
+    }
+
     const titulo = vehiculo ? `${vehiculo.marca} ${vehiculo.modelo} ${vehiculo.anio}` : "";
     const descripcion = vehiculo 
         ? `Hola, soy ${user.name} y estoy interesado en ver el vehículo ${vehiculo.marca} ${vehiculo.modelo} ${vehiculo.anio} que se encuentra publicado en la web!` 
         : "";
-
 
     const { data, setData, post, processing, errors } = useForm({
         fecha: "",
@@ -28,11 +32,8 @@ export default function AgendarCita({ closeModal, vehiculo }) {
 
     const submit = (e) => {
         e.preventDefault();
-
-     
         const fechaHora = dayjs(`${data.fecha} ${data.hora}`).format("YYYY-MM-DD HH:mm:ss");
 
-       
         const newCita = {
             fecha: fechaHora, 
             idCliente: data.idCliente,
@@ -43,7 +44,6 @@ export default function AgendarCita({ closeModal, vehiculo }) {
             descripcion: data.descripcion, 
         };
 
-     
         post(route("agenda.storeCita"), newCita, {
             onFinish: () => {
                 closeModal();

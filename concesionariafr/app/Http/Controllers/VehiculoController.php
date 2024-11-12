@@ -82,5 +82,19 @@ public function index()
     return redirect()->route('vehiculos.index')->with('success', 'Auto creado exitosamente.');
 }
 
+public function show($marca, $modelo, $anio)
+{
+    // Buscar el vehículo usando los parámetros de marca, modelo y año
+    $vehiculo = Vehiculo::where('marca', $marca)
+                        ->where('modelo', $modelo)
+                        ->where('anio', $anio)
+                        ->firstOrFail();
+
+    // Retornar la vista con los detalles del vehículo
+    return Inertia::render('Vehiculos/VehiculoDetalle', [
+        'vehiculo' => $vehiculo,
+    ]);
+}
+
 
 }
