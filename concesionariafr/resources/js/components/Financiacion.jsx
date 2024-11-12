@@ -4,32 +4,36 @@ import Modal from 'react-modal';
 
 export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
     const [selectedLinea, setSelectedLinea] = useState(lineasFinanciamiento[0]);
-    const [cuotas, setCuotas] = useState([]);
+    const [cuotas, setCuotas] = useState([]); // Estado para las cuotas
     const [capitalMaxFinanciar, setCapitalMaxFinanciar] = useState(0);
     const [montoAFinanciar, setMontoAFinanciar] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [cuotaSeleccionada, setCuotaSeleccionada] = useState(''); // Nuevo estado para la cuota seleccionada
+
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
+    // Esta función actualiza las cuotas y el capital máximo a financiar cada vez que se cambia la línea de financiamiento
     const handleSelectChange = (e) => {
         const selectedId = e.target.value;
         const selected = lineasFinanciamiento.find(linea => linea.id === parseInt(selectedId));
-        setSelectedLinea(selected);
-        setCuotas(selected.cuotas);
+        setSelectedLinea(selected);  // Cambiar la línea seleccionada
+        setCuotaSeleccionada(''); // Resetear la cuota seleccionada al cambiar la línea
     };
 
     useEffect(() => {
-        if (vehiculo && selectedLinea) {
+        // Al cambiar la línea de financiamiento, actualizamos las cuotas
+        if (selectedLinea) {
+            setCuotas(selectedLinea.cuotas);
             const porcentajeFinanciacion = parseFloat(selectedLinea.porcentaje.replace(',', '.'));
             if (!isNaN(porcentajeFinanciacion) && !isNaN(vehiculo.precio)) {
                 const capitalFinanciado = vehiculo.precio * (porcentajeFinanciacion / 100);
                 const capitalMax = selectedLinea.capitalMax;
 
                 setCapitalMaxFinanciar(Math.floor(Math.min(capitalFinanciado, capitalMax)));
-                setCuotas(selectedLinea.cuotas);
             }
         }
-    }, [vehiculo, selectedLinea]);
+    }, [selectedLinea, vehiculo]);
 
     const handleMontoChange = (e) => {
         let value = e.target.value;
@@ -38,6 +42,11 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
             value = capitalMaxFinanciar;
         }
         setMontoAFinanciar(value);
+    };
+
+    // Función para manejar el cambio de la cuota seleccionada
+    const handleCuotaChange = (e) => {
+        setCuotaSeleccionada(e.target.value);
     };
 
     return (
@@ -78,6 +87,8 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                     <select
                         id="cuota"
                         className="w-full p-2 border border-gray-300 rounded-md"
+                        onChange={handleCuotaChange} // Manejar cambio de cuota
+                        value={cuotaSeleccionada} // Usar el estado cuotaSeleccionada
                     >
                         {cuotas.length > 0 ? (
                             cuotas.map((cuota) => (
@@ -105,15 +116,14 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                 ariaHideApp={false}
                 className="p-8 max-w-4xl mx-auto my-32 border-gray-400 border-2 bg-white"
             >
-<VehiculoFinanciado
-    monto={montoAFinanciar}
-    cuotas={cuotas[0]?.numeroCuotas || 0}
-    tasa={selectedLinea.TNA}
-    lineaFinanciamiento={selectedLinea} // Pasamos la línea completa
-    vehiculo = {vehiculo}
-    onClose={() => setShowModal(false)}
-/>
-
+                <VehiculoFinanciado
+                    monto={montoAFinanciar}
+                    cuotas={cuotaSeleccionada || 0} // Usar la cuota seleccionada
+                    tasa={selectedLinea.TNA}
+                    lineaFinanciamiento={selectedLinea} // Pasamos la línea completa
+                    vehiculo={vehiculo}
+                    onClose={closeModal}
+                />
             </Modal>
         </div>
     );
