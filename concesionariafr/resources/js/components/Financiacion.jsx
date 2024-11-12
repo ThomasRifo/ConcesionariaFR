@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import VehiculoFinanciado from "@/components/VehiculoFinanciado";
+import Modal from 'react-modal';
 
 export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
     const [selectedLinea, setSelectedLinea] = useState(lineasFinanciamiento[0]);
     const [cuotas, setCuotas] = useState([]);
     const [capitalMaxFinanciar, setCapitalMaxFinanciar] = useState(0);
     const [montoAFinanciar, setMontoAFinanciar] = useState('');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const openModal = () => setModalIsOpen(true);
+    const closeModal = () => setModalIsOpen(false);
 
     const handleSelectChange = (e) => {
         const selectedId = e.target.value;
@@ -20,7 +25,7 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                 const capitalFinanciado = vehiculo.precio * (porcentajeFinanciacion / 100);
                 const capitalMax = selectedLinea.capitalMax;
 
-                setCapitalMaxFinanciar(Math.min(capitalFinanciado, capitalMax));
+                setCapitalMaxFinanciar(Math.floor(Math.min(capitalFinanciado, capitalMax)));
                 setCuotas(selectedLinea.cuotas);
             }
         }
@@ -86,6 +91,27 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                     </select>
                 </li>
             </ul>
+            <button 
+                onClick={openModal}
+                className="mt-4 p-2 bg-blue-500 text-white rounded-md"
+            >
+                Calcular financiamiento
+            </button>
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Financiación"
+                ariaHideApp={false}
+                className="p-8 max-w-4xl mx-auto my-32 border-gray-400 border-2 bg-white"
+            >
+                <VehiculoFinanciado
+                    monto={montoAFinanciar}
+                    cuotas={cuotas[0]?.numeroCuotas || 0} 
+                    tasa={selectedLinea.TNA}
+                    onClose={() => setShowModal(false)}
+                />
+            </Modal>
         </div>
     );
 }
