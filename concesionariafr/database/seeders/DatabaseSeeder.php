@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoEventoSeeder::class);
         $this->call(EstadoEventoSeeder::class);
         $this->call(LineaFinanciamientoSeeder::class);
+        $this->call(CuotasFinanciamientoSeeder::class);
     }
 }

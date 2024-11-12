@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class LineaFinanciamiento extends Model
 {
+
+    public function cuotas()
+    {
+        return $this->hasMany(CuotaFinanciamiento::class, 'idLineaFinanciamiento');
+    }
+
     use HasFactory;
 
     // Nombre de la tabla en la base de datos

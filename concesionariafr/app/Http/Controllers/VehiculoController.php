@@ -6,9 +6,11 @@ use App\Models\Vehiculo;
 use App\Models\categoriaVehiculo;
 use App\Models\Combustible;
 use App\Models\Transmision;
+use App\Models\LineaFinanciamiento;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+
 
 class VehiculoController extends Controller
 {
@@ -84,12 +86,16 @@ public function index()
 
     public function show($id)
     {
-        $vehiculo = Vehiculo::findOrFail($id);
+    $vehiculo = Vehiculo::findOrFail($id);
+    
+    $lineasFinanciamiento = LineaFinanciamiento::with('cuotas')->get();
 
-        return Inertia::render('Vehiculos/VehiculoDetalle', [
-            'vehiculo' => $vehiculo,
-        ]);
-    }
+    return Inertia::render('Vehiculos/VehiculoDetalle', [
+        'vehiculo' => $vehiculo,
+        'lineasFinanciamiento' => $lineasFinanciamiento,
+    ]);
+}
+
 
 
 }

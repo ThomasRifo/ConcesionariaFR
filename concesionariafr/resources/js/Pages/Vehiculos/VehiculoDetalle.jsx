@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import Presupuesto from "@/components/Presupuesto";
 
-export default function VehiculoDetalle({ vehiculo }) {
+export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const openModal = () => setModalIsOpen(true);
@@ -50,7 +50,7 @@ export default function VehiculoDetalle({ vehiculo }) {
 
                 <h2 className="text-2xl font-bold mb-4">{vehiculo.marca} {vehiculo.modelo}</h2>
 
-                <Presupuesto vehiculo={vehiculo} />
+                <Presupuesto vehiculo={vehiculo} lineasFinanciamiento={lineasFinanciamiento} />
             </Modal>
         </>
     );

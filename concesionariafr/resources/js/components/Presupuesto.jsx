@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import Financiacion from "@/components/Financiacion";
 
-export default function Presupuesto({ vehiculo }) {
+export default function Presupuesto({ vehiculo, lineasFinanciamiento }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
@@ -32,7 +32,7 @@ export default function Presupuesto({ vehiculo }) {
             >
                 <h2 className="text-2xl font-bold mb-4">Elegí tu línea financiera</h2>
 
-                <Financiacion vehiculo={vehiculo} />
+                <Financiacion vehiculo={vehiculo} lineasFinanciamiento={lineasFinanciamiento} />
 
                 <button 
                     onClick={closeModal} 
