@@ -54,7 +54,7 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                     </select>
                 </li>
                 <li>Entidad: {selectedLinea.entidad}</li>
-                <li>Capital máximo a financiar: {capitalMaxFinanciar}</li>
+                <li>Capital máximo a financiar: ${capitalMaxFinanciar}</li>
                 <li>
                     <label htmlFor="monto">Monto a financiar</label>
                     <input

@@ -44,7 +44,7 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento }) {
                         Presupuestar
                     </button>
                     <button 
-                        className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full hover:bg-red-700" 
+                        className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md hover:bg-red-700" 
                         onClick={() => openModal2(vehiculo)}
                     >
                         Agendar Cita
