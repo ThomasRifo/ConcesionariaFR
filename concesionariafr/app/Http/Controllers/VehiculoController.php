@@ -87,11 +87,13 @@ class VehiculoController extends Controller
     public function show($marca, $modelo, $anio)
     {
         // Buscar el vehículo usando los parámetros de marca, modelo y año
+    
+
         $vehiculo = Vehiculo::where('marca', $marca)
             ->where('modelo', $modelo)
             ->where('anio', $anio)
             ->firstOrFail();
-
+            $vehiculo->increment('cantidadVistas');
         $lineasFinanciamiento = LineaFinanciamiento::with('cuotas')->get();
 
         // Retornar la vista con los detalles del vehículo

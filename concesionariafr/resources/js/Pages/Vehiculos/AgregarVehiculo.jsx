@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton'; // Componente personalizado
 import TextInput from '@/Components/TextInput'; // Componente personalizado
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
     const { data, setData, post, errors } = useForm({
@@ -23,7 +24,12 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <>
+         <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 leading-tight justify-start">Registrar Vehículo</h2>}
+        >
+        
+            
+        <div className="max-w-2xl mx-auto p-0 bg-white shadow-md rounded-lg">
             <h2 className="text-2xl font-semibold text-gray-700 mb-6">Crear Nuevo Vehículo</h2>
             <form onSubmit={submit} className="space-y-4">
                 {/* Select de Categoría */}
@@ -158,6 +164,8 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                 </div>
             </form>
         </div>
+        </AuthenticatedLayout>
+        </>
     );
 };
 
