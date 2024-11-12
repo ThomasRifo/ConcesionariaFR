@@ -10,10 +10,15 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
 
     return (
         <>
-            <Head title="Concesionaria FR" />
-            <div className='h-full'></div>
-            <div>asfasfsa</div>
-            <NavbarClient></NavbarClient>
+            <Head title="Vehículos" />
+            <NavbarClient />
+            <div className="h-2/3 h-[76vh] overflow-hidden">
+                <img 
+                    src="https://autocity.com.ar/wp-content/uploads/2022/01/autocity-seis-marcas.jpeg" 
+                    className="w-full -mt-24 object-cover" 
+                    alt="Imagen de autos"
+                />
+            </div>
            
         </>
     );

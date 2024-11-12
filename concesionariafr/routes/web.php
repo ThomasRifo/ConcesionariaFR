@@ -19,7 +19,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 // Ruta dashboard
 Route::get('/dashboard', function () {
@@ -38,7 +38,7 @@ Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
 
 // Rutas para vehículos
 Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
-Route::get('/vehiculos/{id}', [VehiculoController::class, 'show'])->name('vehiculo.detalle');
+Route::get('/vehiculos/{marca}-{modelo}-{anio}', [VehiculoController::class, 'show'])->name('vehiculo.show');
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {
 

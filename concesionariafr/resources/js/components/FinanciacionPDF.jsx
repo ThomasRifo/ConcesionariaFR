@@ -7,47 +7,53 @@ const styles = StyleSheet.create({
         backgroundColor: '#E4E4E4'
     },
     section: {
+        flexDirection: 'row',
         margin: 20,
         padding: 20,
-        flexGrow: 1
+    },
+    imageContainer: {
+        width: '45%',
+        alignItems: 'center',
     },
     image: {
-        width: '33%',
+        width: '100%',
         height: 'auto',
     },
     infoContainer: {
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        width: '50%',
         paddingLeft: 10,
-        width: '33%',
+        justifyContent: 'flex-start',
     },
     text: {
         fontSize: 12,
+        marginBottom: 5,
     }
 });
 
-const imagenBase64 = "data:image/jpeg;base64, /9j/4AAQSkZJRgABAQEAAAAAAAD..."; // imagen convertida a base64
+export default function Dashboard({ vehiculo, user }) {
 
-const FinanciacionPDF = ({ vehiculo, user }) => (
-    <Document>
-        <Page size="A4" style={styles.page}>
-            <View style={styles.section}>
-                <Image 
-                    src={imagenBase64} 
-                    style={styles.image} 
-                />
-                <View style={styles.infoContainer}>
-                    <Text style={styles.text}>
-                        {`${vehiculo?.marca} ${vehiculo?.modelo} ${vehiculo?.anio}`}
-                    </Text>
-                    <Text style={styles.text}>Cliente:</Text>
-                    <Text style={styles.text}>{`${user?.name} ${user?.lastname}`}</Text>
-                    <Text style={styles.text}>{user?.email}</Text>
-                    <Text style={styles.text}>{user?.telefono}</Text>
+    return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <View style={styles.section}>
+
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.text}>
+                            {`${vehiculo?.marca} ${vehiculo?.modelo} ${vehiculo?.anio}`}
+                        </Text>
+                        <Text style={styles.text}>Cliente:</Text>
+                        <Text style={styles.text}>{`${user?.name} ${user?.lastname}`}</Text>
+                        <Text style={styles.text}>{user?.email}</Text>
+                        <Text style={styles.text}>{user?.telefono}</Text>
+                    </View>
+                    <View style={styles.imageContainer}>
+                        <Image
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu-UcggDc1FJiuR9nW9Io2ACxF5j9Axq3U_A&s"
+                            style={styles.image}
+                        />
+                    </View>
                 </View>
-            </View>
-        </Page>
-    </Document>
-);
-
-export default FinanciacionPDF;
+            </Page>
+        </Document>
+    );
+}
