@@ -13,7 +13,7 @@ use Spatie\Permission\Models\Role;
 
 // Ruta raíz (inicio)
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -38,6 +38,7 @@ Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
 
 // Rutas para vehículos
 Route::get('/vehiculos', [VehiculoController::class, 'index'])->name('vehiculos.index');
+Route::get('/vehiculos/{marca}-{modelo}-{anio}', [VehiculoController::class, 'show'])->name('vehiculos.show');
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {
 

@@ -23,6 +23,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@react-pdf/renderer": "^4.0.0",
         "dayjs": "^1.11.13",
         "react-big-calendar": "^1.15.0",
         "react-modal": "^3.16.1"
