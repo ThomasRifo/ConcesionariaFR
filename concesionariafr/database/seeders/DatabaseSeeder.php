@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TransmisionesTableSeeder::class);
         $this->call(TipoEventoSeeder::class);
         $this->call(EstadoEventoSeeder::class);
+        $this->call(LineaFinanciamientoSeeder::class);
     }
 }

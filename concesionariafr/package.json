@@ -23,6 +23,9 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@inertiajs/inertia": "^0.11.1",
+        "@inertiajs/inertia-react": "^0.8.1",
+        "amortization-system": "^1.0.3",
         "dayjs": "^1.11.13",
         "react-big-calendar": "^1.15.0",
         "react-modal": "^3.16.1"
