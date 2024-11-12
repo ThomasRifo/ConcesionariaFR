@@ -105,12 +105,15 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                 ariaHideApp={false}
                 className="p-8 max-w-4xl mx-auto my-32 border-gray-400 border-2 bg-white"
             >
-                <VehiculoFinanciado
-                    monto={montoAFinanciar}
-                    cuotas={cuotas[0]?.numeroCuotas || 0} 
-                    tasa={selectedLinea.TNA}
-                    onClose={() => setShowModal(false)}
-                />
+<VehiculoFinanciado
+    monto={montoAFinanciar}
+    cuotas={cuotas[0]?.numeroCuotas || 0}
+    tasa={selectedLinea.TNA}
+    lineaFinanciamiento={selectedLinea} // Pasamos la línea completa
+    vehiculo = {vehiculo}
+    onClose={() => setShowModal(false)}
+/>
+
             </Modal>
         </div>
     );

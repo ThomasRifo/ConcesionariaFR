@@ -77,6 +77,8 @@ const Vehiculos = ({
         vehiculos,
     ]);
 
+    
+
     const handleCheckboxChange = (e, setStateFunction, selectedItems) => {
         const value = e.target.value;
         const checked = e.target.checked;
