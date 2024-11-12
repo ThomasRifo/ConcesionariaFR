@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, Link } from "@inertiajs/react";
 import Modal from "react-modal";
 import AgendarCita from "../Agenda/AgendarCita";
 import NavbarClient from "@/Layouts/NavbarClient";
@@ -25,8 +25,6 @@ const Vehiculos = ({
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedVehiculo, setSelectedVehiculo] = useState(null);
 
-
-    
     useEffect(() => {
         let filtered = vehiculos;
         if (searchTerm) {
@@ -122,8 +120,8 @@ const Vehiculos = ({
                                 />
                                 <label>{marca.marca}</label>
                             </div>
-                            ))}
-                                            </div>
+                        ))}
+                    </div>
                     <div className="mb-4">
                         <h5 className="font-medium">Modelos</h5>
                         {modelos.map((modelo) => (
@@ -137,7 +135,7 @@ const Vehiculos = ({
                                 <label>{modelo.modelo}</label>
                             </div>
                         ))}
-                         </div>
+                    </div>
                     <div className="mb-4">
                         <h5 className="font-medium">Categoría</h5>
                         <select
@@ -183,47 +181,65 @@ const Vehiculos = ({
                             ))}
                         </select>
                     </div>
-                    </div>
-                    
-                    <div className="w-3/4">
-                        <h2 className="text-2xl font-bold mb-4">Vehículos</h2>
-                        {filteredVehiculos.length ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredVehiculos.map((vehiculo) => (
-                                    <div key={vehiculo.id} className="p-4 border border-gray-200 rounded-lg shadow-lg transition transform hover:scale-105" style={{ maxWidth: "280px" }}>
+                </div>
+
+                <div className="w-3/4">
+                    <h2 className="text-2xl font-bold mb-4">Vehículos</h2>
+                    {filteredVehiculos.length ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredVehiculos.map((vehiculo) => (
+                            <div key={vehiculo.id} className="block">
+                                <Link href={route('vehiculo.detalle', vehiculo.id)} className="block">
+                                    <div className="p-4 border border-gray-200 rounded-lg shadow-lg transition transform hover:scale-105" style={{ maxWidth: "280px" }}>
                                         <h3 className="text-lg font-semibold mb-1">
                                             {vehiculo.marca} {vehiculo.modelo}
                                         </h3>
                                         <p className="text-gray-500 text-sm">Año: {vehiculo.anio}</p>
                                         <p className="text-gray-900 font-bold">Precio: {vehiculo.precio}</p>
-                                        <button className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full hover:bg-red-700" onClick={() => openModal(vehiculo)}>
-                                            Agendar Cita
-                                        </button>
-                                        <PDFDownloadLink
-                                            document={<FinanciacionPDF vehiculo={vehiculo} user={user} />}
-                                            fileName={`${vehiculo.marca}-${vehiculo.modelo}-${dayjs().format('YYYY-MM-DD')}.pdf`}
-                                        >
-                                            {({ loading }) => (loading ? 'Cargando documento...' : 'Descargar PDF')}
-                                        </PDFDownloadLink>
+                                        <div className="mt-4">
+                                            <button
+                                                className="bg-[#800000] text-white py-2 px-4 rounded-md w-full hover:bg-red-700"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    openModal(vehiculo);
+                                                }}
+                                            >
+                                                Agendar Cita
+                                            </button>
+                    
+                                            <PDFDownloadLink
+                                                document={<FinanciacionPDF vehiculo={vehiculo} user={user} />}
+                                                fileName={`${vehiculo.marca}-${vehiculo.modelo}-${vehiculo.id}.pdf`}
+                                            >
+                                                {({ loading }) =>
+                                                    loading ? (
+                                                        <button className="mt-2 w-full py-2 px-4 bg-green-600 text-white rounded-md">
+                                                            Cargando PDF...
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="mt-2 w-full py-2 px-4 bg-green-600 text-white rounded-md"
+                                                            onClick={(e) => e.preventDefault()}
+                                                        >
+                                                            Ver PDF
+                                                        </button>
+                                                    )
+                                                }
+                                            </PDFDownloadLink>
+                                        </div>
                                     </div>
-                                ))}
+                                </Link>
                             </div>
-                        ) : (
-                            <p>No se encontraron vehículos.</p>
-                        )}
-                    </div>
+                        ))}
+                    </div>                    
+                    ) : (
+                        <p>No hay vehículos disponibles.</p>
+                    )}
                 </div>
             </div>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Agendar Cita"
-                ariaHideApp={false}
-                className="p-8 max-w-4xl mx-auto my-32 border-gray-400 border-2 bg-white"
-            >
-                <h2>
-                    Agendar Cita para {selectedVehiculo ? `${selectedVehiculo.marca} ${selectedVehiculo.modelo}` : ""}
-                </h2>
+            </div>
+
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Agendar Cita">
                 <AgendarCita vehiculo={selectedVehiculo} closeModal={closeModal} />
             </Modal>
         </>
