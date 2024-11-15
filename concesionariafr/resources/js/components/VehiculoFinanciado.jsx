@@ -12,6 +12,10 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
+    const formatPrecio = (precio) => {
+        return new Intl.NumberFormat('es-ES').format(precio);
+    };
+
     const calcularCuotaFija = (monto, cuotas, tasa) => {
         const tasaMensual = tasa / 100 / 12; // Convertimos la tasa anual a mensual
         return (monto * tasaMensual) / (1 - Math.pow(1 + tasaMensual, -cuotas));
@@ -67,8 +71,8 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
                 <h2 className="font-medium text-xl">Detalles</h2>
                 <ul className="m-4">
                     <li className="pt-2"><strong>{lineaFinanciamiento.nombre}</strong> </li>
-                    <li className="pt-2">Monto a financiar: <strong className="text-lg m-6">${monto}</strong></li>
-                    <li className="pt-2">Cuota Mensual Fija: <strong>${cuotaFija.toFixed(2)}</strong> </li>
+                    <li className="pt-2">Monto a financiar: <strong className="text-lg m-6">${formatPrecio(monto)}</strong></li>
+                    <li className="pt-2">Cuota Mensual Fija: <strong>${formatPrecio(cuotaFija.toFixed(2))}</strong> </li>
                     <li className="pt-2">Cuotas del prestamo: {cuotas} meses</li>
                     <li className="pt-2">Tasa de Interés Anual: {tasa}%</li>
                     <li className="pt-2">Entidad: {lineaFinanciamiento.entidad}</li>

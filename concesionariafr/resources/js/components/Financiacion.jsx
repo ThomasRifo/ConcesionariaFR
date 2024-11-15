@@ -10,8 +10,13 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [cuotaSeleccionada, setCuotaSeleccionada] = useState(''); // Nuevo estado para la cuota seleccionada
 
+    const formatPrecio = (precio) => {
+        return new Intl.NumberFormat('es-ES').format(precio);
+    };
+
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
+    
 
     // Esta función actualiza las cuotas y el capital máximo a financiar cada vez que se cambia la línea de financiamiento
     const handleSelectChange = (e) => {
@@ -68,7 +73,7 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                     </select>
                 </li>
                 <li>Entidad: {selectedLinea.entidad}</li>
-                <li>Capital máximo a financiar: ${capitalMaxFinanciar}</li>
+                <li>Capital máximo a financiar: ${formatPrecio(capitalMaxFinanciar)}</li>
                 <li>
                     <label htmlFor="monto">Monto a financiar</label>
                     <input

@@ -6,12 +6,15 @@ export default function Presupuesto({ vehiculo, lineasFinanciamiento }) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
+    const formatPrecio = (precio) => {
+        return new Intl.NumberFormat('es-ES').format(precio);
+    };
 
     return (
         <>
             <div>
-                <p><strong>Precio del vehículo: $ </strong>{vehiculo.precio}</p>
-                <p><strong>Saldo a cancelar: $ </strong>{vehiculo.precio}</p>
+                <p><strong>Precio del vehículo: $ </strong>{formatPrecio(vehiculo.precio)}</p>
+                <p><strong>Saldo a cancelar: $ </strong>{formatPrecio(vehiculo.precio)}</p>
 
                 <div className="flex space-x-4">
                     <button 
