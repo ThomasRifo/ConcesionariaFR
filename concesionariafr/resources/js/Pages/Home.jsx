@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import NavbarClient from '@/Layouts/NavbarClient';
 
 export default function Welcome({ vehiculos }) {
@@ -38,19 +38,29 @@ export default function Welcome({ vehiculos }) {
                                 alt={`${vehiculo.marca} ${vehiculo.modelo}`}
                                 className="w-full h-48 object-cover"
                             />
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold">
+                            <div className="p-4 text-center">
+                                <h3 className="text-2xl font-bold mb-2">
                                     {vehiculo.marca} {vehiculo.modelo}
                                 </h3>
-                                <p className="text-gray-600 text-sm">
-                                    {vehiculo.transmision} - {vehiculo.combustible}
+                                <p className="text-black-600 font-bold text-2xl mt-4">
+                                    {new Intl.NumberFormat('es-AR', {
+                                        style: 'currency',
+                                        currency: 'ARS',
+                                        maximumFractionDigits: 0,
+                                    }).format(vehiculo.precio)}
                                 </p>
-                                <p className="text-green-600 font-bold text-lg mt-2">
-                                    ${vehiculo.precio}
-                                </p>
-                                <button className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-                                    Ver Detalles
-                                </button>
+                                <Link
+                                    href={route("vehiculo.show", {
+                                        marca: vehiculo.marca,
+                                        modelo: vehiculo.modelo,
+                                        anio: vehiculo.anio,
+                                    })}
+                                    className="block"
+                                >
+                                    <button className="bg-white text-black border border-black w-full mt-4 p-3 rounded transition-all duration-300 hover:bg-black hover:text-white">
+                                        Ver Detalles
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ))}
