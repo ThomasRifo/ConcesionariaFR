@@ -4,11 +4,11 @@ import Modal from 'react-modal';
 
 export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
     const [selectedLinea, setSelectedLinea] = useState(lineasFinanciamiento[0]);
-    const [cuotas, setCuotas] = useState([]); // Estado para las cuotas
+    const [cuotas, setCuotas] = useState([]);
     const [capitalMaxFinanciar, setCapitalMaxFinanciar] = useState(0);
     const [montoAFinanciar, setMontoAFinanciar] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [cuotaSeleccionada, setCuotaSeleccionada] = useState(''); // Nuevo estado para la cuota seleccionada
+    const [cuotaSeleccionada, setCuotaSeleccionada] = useState('');
 
     const formatPrecio = (precio) => {
         return new Intl.NumberFormat('es-ES').format(precio);
@@ -16,26 +16,31 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
-    
 
-    // Esta función actualiza las cuotas y el capital máximo a financiar cada vez que se cambia la línea de financiamiento
     const handleSelectChange = (e) => {
         const selectedId = e.target.value;
         const selected = lineasFinanciamiento.find(linea => linea.id === parseInt(selectedId));
-        setSelectedLinea(selected);  // Cambiar la línea seleccionada
-        setCuotaSeleccionada(''); // Resetear la cuota seleccionada al cambiar la línea
+        setSelectedLinea(selected);
     };
 
     useEffect(() => {
-        // Al cambiar la línea de financiamiento, actualizamos las cuotas
         if (selectedLinea) {
             setCuotas(selectedLinea.cuotas);
+
+            // Calcular el capital máximo a financiar
             const porcentajeFinanciacion = parseFloat(selectedLinea.porcentaje.replace(',', '.'));
             if (!isNaN(porcentajeFinanciacion) && !isNaN(vehiculo.precio)) {
                 const capitalFinanciado = vehiculo.precio * (porcentajeFinanciacion / 100);
                 const capitalMax = selectedLinea.capitalMax;
 
                 setCapitalMaxFinanciar(Math.floor(Math.min(capitalFinanciado, capitalMax)));
+            }
+
+            // Seleccionar automáticamente la primera cuota si hay cuotas disponibles
+            if (selectedLinea.cuotas.length > 0) {
+                setCuotaSeleccionada(selectedLinea.cuotas[0].numeroCuotas);
+            } else {
+                setCuotaSeleccionada('');
             }
         }
     }, [selectedLinea, vehiculo]);
@@ -49,7 +54,6 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
         setMontoAFinanciar(value);
     };
 
-    // Función para manejar el cambio de la cuota seleccionada
     const handleCuotaChange = (e) => {
         setCuotaSeleccionada(e.target.value);
     };
@@ -92,8 +96,8 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
                     <select
                         id="cuota"
                         className="w-full p-2 border border-gray-300 rounded-md"
-                        onChange={handleCuotaChange} // Manejar cambio de cuota
-                        value={cuotaSeleccionada} // Usar el estado cuotaSeleccionada
+                        onChange={handleCuotaChange}
+                        value={cuotaSeleccionada}
                     >
                         {cuotas.length > 0 ? (
                             cuotas.map((cuota) => (
@@ -123,9 +127,9 @@ export default function Financiacion({ vehiculo, lineasFinanciamiento }) {
             >
                 <VehiculoFinanciado
                     monto={montoAFinanciar}
-                    cuotas={cuotaSeleccionada || 0} // Usar la cuota seleccionada
+                    cuotas={cuotaSeleccionada || 0}
                     tasa={selectedLinea.TNA}
-                    lineaFinanciamiento={selectedLinea} // Pasamos la línea completa
+                    lineaFinanciamiento={selectedLinea}
                     vehiculo={vehiculo}
                     onClose={closeModal}
                 />

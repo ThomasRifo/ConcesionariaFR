@@ -4,78 +4,90 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Head, useForm, usePage } from "@inertiajs/react";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchClientes from "@/components/SearchClientes";
 
-export default function FormAgenda({ currentEvent, closeModal }) {
+export default function FormAgenda({ currentEvent, closeModal, handleEventChange }) {
     const user = usePage().props.auth.user;
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    
+    // Lógica para personalizar los campos 'titulo' y 'descripcion'
+    console.log("soy curren evente" , currentEvent);
+    const { data, setData, post, put, processing, errors } = useForm({
         titulo: currentEvent ? currentEvent.title : "",
         descripcion: currentEvent ? currentEvent.descripcion : "",
         fecha: currentEvent ? dayjs(currentEvent.start).format("YYYY-MM-DDTHH:mm") : "",
         idTipoEvento: currentEvent ? currentEvent.idTipoEvento : "",
-        idEmpleado: user.id,
-        idCliente: 1,
-        idEstado: 4,
+        idEstado: currentEvent && currentEvent.idEstado ? currentEvent.idEstado : 3,
+        idEmpleado: currentEvent && currentEvent.idEmpleado && currentEvent.idEstado !== 1 
+    ? currentEvent.idEmpleado 
+    : user.id,
+        idCliente: currentEvent && currentEvent.idCliente ? currentEvent.idCliente : 1,
+
     });
 
     const [searchTerm, setSearchTerm] = useState("");
 
     const submit = (e) => {
         e.preventDefault();
-
+    
+        console.log("Datos del formulario antes de enviar:", data);  // Verifica aquí los valores
+    
         const newEvent = {
-            id: currentEvent ? currentEvent.id : null,
-            title: data.titulo,
+            titulo: data.titulo,
             descripcion: data.descripcion,
             start: data.fecha,
-            end: dayjs(data.fecha).add(1, "hour").format("YYYY-MM-DDTHH:mm"), // Duración de 1 hora
+            end: dayjs(data.fecha).add(1, "hour").format("YYYY-MM-DDTHH:mm"),
             idCliente: data.idCliente,
             idTipoEvento: data.idTipoEvento,
             idEmpleado: data.idEmpleado,
-            idEstado: data.idEstado,
+            idEstado: data.idEstado, // Esto debe estar correctamente asignado ahora
         };
-
+    
         if (currentEvent && currentEvent.id) {
-            // Actualizar evento
+            // Editar evento
             put(route("agenda.update", currentEvent.id), {
                 data: newEvent,
-                onFinish: () => {
-                    reset();
-                    handleEventChange(newEvent); // Actualiza el estado en el padre
-                    closeModal();
+                onSuccess: () => {
+                    handleEventChange({ newEvent }); // Actualiza en el padre
+                    closeModal(); // Cierra el modal tras éxito
+                },
+                onError: () => {
+                    console.error("Error al actualizar el evento.");
                 },
             });
         } else {
-            // Crear nuevo evento
+            // Crear evento
             post(route("agenda.store"), {
                 data: newEvent,
-                onFinish: () => {
-                    reset();
-                    handleEventChange(newEvent); // Añadir nuevo evento al estado
+                onSuccess: () => {
+                    handleEventChange(newEvent); // Pasa el evento completo desde la respuesta
                     closeModal();
+                },
+                onError: (errors) => {
+                    console.error("Errores al crear el evento:", errors);
                 },
             });
         }
     };
-
-
-const deleteEvent = () => {
-    if (currentEvent && currentEvent.id) {
-        // Actualizar el evento para cambiar su idEstado (eliminar)
-        put(route("agenda.update", currentEvent.id), {
-            preserveScroll: true,
-            data: { idEstado: 5 }, // Cambiar idEstado a 5 (o el valor correspondiente para "eliminado")
-            onFinish: () => {
-                reset();
+    const handleDeleteEvent = (eventId) => {
+        put(route("agenda.delete", eventId), {
+            data: { idEstado: 5 },
+            onSuccess: () => {
+                handleEventChange({ id: eventId, idEstado: 5 }); // Marcado como eliminado
                 closeModal();
             },
-            onError: (errors) => {
-                console.error("Error al eliminar el evento:", errors);
+        });
+    };
+
+    const handleAcceptEvent = (eventId) => {
+        put(route("agenda.accept", eventId), {
+            data: { idEstado: 3 },
+            onSuccess: () => {
+                handleEventChange({ id: eventId, idEstado: 3, idEmpleado: user.id }); // Marcado como aceptado
+                closeModal();
             },
         });
-    }
-};
+    };
 
     const today = dayjs().format("YYYY-MM-DDTHH:mm");
 
@@ -87,6 +99,7 @@ const deleteEvent = () => {
             </h2>
 
             <form onSubmit={submit} autoComplete="off">
+                {/* Título */}
                 <div>
                     <InputLabel htmlFor="titulo" value="Título" />
                     <TextInput
@@ -101,6 +114,7 @@ const deleteEvent = () => {
                     <InputError message={errors.titulo} className="mt-2" />
                 </div>
 
+                {/* Descripción */}
                 <div className="mt-4">
                     <InputLabel htmlFor="descripcion" value="Descripción" />
                     <TextInput
@@ -115,6 +129,7 @@ const deleteEvent = () => {
                     <InputError message={errors.descripcion} className="mt-2" />
                 </div>
 
+                {/* Fecha y Hora */}
                 <div className="mt-4">
                     <InputLabel htmlFor="fecha" value="Fecha y Hora" />
                     <TextInput
@@ -130,15 +145,15 @@ const deleteEvent = () => {
                     <InputError message={errors.fecha} className="mt-2" />
                 </div>
 
+                {/* Tipo de Evento */}
                 <div className="mt-4">
                     <InputLabel htmlFor="idTipoEvento" value="Tipo de Evento" />
                     <select
                         id="idTipoEvento"
                         name="idTipoEvento"
                         value={data.idTipoEvento}
-                        className="mt-1 block w-full"
                         onChange={(e) => setData("idTipoEvento", e.target.value)}
-
+                        className="mt-1 block w-full"
                     >
                         <option value="">Selecciona un tipo de evento</option>
                         {usePage().props.tiposEvento.map((tipo) => (
@@ -150,6 +165,7 @@ const deleteEvent = () => {
                     <InputError message={errors.idTipoEvento} className="mt-2" />
                 </div>
 
+                {/* Buscar Cliente (opcional) */}
                 {data.idTipoEvento === "2" && (
                     <div className="mt-4">
                         <SearchClientes
@@ -161,17 +177,27 @@ const deleteEvent = () => {
                     </div>
                 )}
 
+                {/* Botones */}
                 <div className="flex items-center justify-end mt-4">
                     <PrimaryButton className="ml-4" processing={processing}>
                         {currentEvent && currentEvent.id ? "Actualizar" : "Crear Evento"}
                     </PrimaryButton>
-                    {currentEvent && currentEvent.id && (
+                    {currentEvent && currentEvent.id && currentEvent.idEstado !== 1 && (
                         <button
                             type="button"
-                            onClick={deleteEvent}
+                            onClick={() => handleDeleteEvent(currentEvent.id)}
                             className="ml-4 text-red-600 underline"
                         >
                             Eliminar
+                        </button>
+                    )}
+                    {currentEvent && currentEvent.id && currentEvent.idEstado === 1 && (
+                        <button
+                            type="button"
+                            onClick={() => handleAcceptEvent(currentEvent.id)}
+                            className="ml-4 text-red-600 underline"
+                        >
+                            Aceptar cita
                         </button>
                     )}
                     <button

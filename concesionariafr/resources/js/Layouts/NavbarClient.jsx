@@ -27,7 +27,7 @@ const Navbar = ({ isBlackBg }) => {
             className={`fixed top-0 w-full z-50 duration-1000 ease-in-out ${navbarBgClass}`}
         >
             <nav className="container mx-auto px-4 py-4 flex items-center justify-between text-xl h-24">
-                <a href={route("dashboard")} className="text-white font-bold text-4xl">
+            <a href={route("dashboard")} className="text-white font-bold text-4xl">
                     Logo
                 </a>
                 <div className="space-x-6">

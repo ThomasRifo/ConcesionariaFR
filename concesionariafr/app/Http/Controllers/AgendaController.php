@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Mail\CitaConfirmada;
+use App\Mail\CitaReprogramada;
+use Illuminate\Support\Facades\Mail;
 
 class AgendaController extends Controller
 {
@@ -20,6 +23,9 @@ class AgendaController extends Controller
         // Obtener eventos y darles formato adecuado
         $agendas = Agenda::with('tipoEvento', 'empleado', 'cliente', 'estado') // Sin 'idEstado', ya que ya está incluido en la relación 'estado'
     ->whereIn('idEmpleado', [$empleadoId, 1])
+    ->whereHas('estado', function ($query) {
+        $query->where('id', '!=', 5); // Filtrar donde el idEstado no sea 5
+    })
     ->orderBy('fecha', 'asc')
     ->get()
     ->map(function ($agenda) {
@@ -41,6 +47,7 @@ class AgendaController extends Controller
             'end' => $end->format('Y-m-d\TH:i:s'),
             'title' => $agenda->titulo,
             'descripcion' => $agenda->descripcion,
+            'idTipoEvento' => $agenda->tipoEvento->id ?? null,
             'idEstado' => $agenda->estado->id ?? null, // Aquí tomamos el id del estado
         ];
     });
@@ -51,36 +58,37 @@ class AgendaController extends Controller
             'agendas' => $agendas,
             'tiposEvento' => $tiposEvento,
         ]);
+        
     }
     /**
      * Store a newly created agenda event in storage.
      */
     public function store(Request $request)
-    {
-        // Validar los campos
-        $request->validate([
-            'titulo' => 'required|string|max:32',
-            'descripcion' => 'required|string|max:250',
-            'fecha' => 'required|date',
-            'idTipoEvento' => 'required|exists:tipo_evento,id',
-            'idCliente' => 'required|exists:users,id',
-            'idEstado' => 'required|exists:estado_evento,id',
-        ]);
+{
 
-        // Crear el evento en la tabla 'agenda'
-        $agenda = Agenda::create([
-            'titulo' => $request->titulo,
-            'descripcion' => $request->descripcion,
-            'fecha' => $request->fecha,
-            'idTipoEvento' => $request->idTipoEvento,
-            'idEmpleado' => Auth::user()->id, // ID del empleado autenticado
-            'idCliente' => $request->idCliente,
-            'idEstado' => $request->idEstado,
-        ]);
+    // Validar los campos
+    $request->validate([
+        'titulo' => 'required|string|max:32',
+        'descripcion' => 'required|string|max:250',
+        'fecha' => 'required|date',
+        'idTipoEvento' => 'required|exists:tipo_evento,id',
+        'idCliente' => 'required|exists:users,id',
+        'idEstado' => 'required|integer|exists:estado_evento,id', // Validar como entero
+    ]);
 
-        // Redirigir al dashboard o donde necesites
-        return Inertia::render('Agenda')->with('success', 'Evento creado con éxito.');
-    }
+    // Crear el evento en la tabla 'agenda'
+    $agenda = Agenda::create([
+        'titulo' => $request->titulo,
+        'descripcion' => $request->descripcion,
+        'fecha' => $request->fecha,
+        'idTipoEvento' => $request->idTipoEvento,
+        'idEmpleado' => Auth::user()->id,
+        'idCliente' => $request->idCliente,
+        'idEstado' => $request->idEstado,
+    ]);
+
+    return Inertia::render('Agenda')->with('success', 'Evento creado con éxito.');
+}
 
     public function storeCita(Request $request)
     {
@@ -123,29 +131,102 @@ class AgendaController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Validar los campos
+        
         $request->validate([
             'titulo' => 'required|string|max:32',
             'descripcion' => 'required|string|max:250',
             'fecha' => 'required|date',
             'idTipoEvento' => 'required|exists:tipo_evento,id',
-            'idCliente' => 'required|exists:users,id',
             'idEstado' => 'required|exists:estado_evento,id',
         ]);
-
-        // Encontrar el evento existente por su ID
+    
         $agenda = Agenda::findOrFail($id);
-
-        // Actualizar los datos del evento
+    
         $agenda->update([
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
             'fecha' => $request->fecha,
             'idTipoEvento' => $request->idTipoEvento,
-            'idCliente' => $request->idCliente,
+            'idEstado' => $request->idEstado, 
+            'idEmpleado' => Auth::user()->id, 
         ]);
 
-        // Redirigir con un mensaje de éxito
+        if($request->idEstado == 1){
+                // Obtener los datos del cliente y del empleado
+    $cliente = User::findOrFail($request->idEmpleado);
+    $empleado = User::findOrFail($request->idCliente);
+
+    $agenda->update([
+        'idEstado' => 2,
+    ]);
+
+    // Preparar los datos para enviar por correo
+    $data = [
+        'nombreCliente' => $cliente->name . ' ' . $cliente->lastname,
+        'fecha' => $agenda->fecha,
+        'descripcion' => $agenda->descripcion,
+        'nombreEmpleado' => $empleado->name . ' ' . $empleado->lastname,
+    ];
+
+    // Enviar el correo
+    Mail::to($cliente->email)->send(new CitaReprogramada($data));
+        }
+    
         return redirect()->route('agenda.index')->with('success', 'Evento actualizado con éxito.');
     }
+
+
+
+    public function delete(Request $request, $id)
+{
+    // Validar que se proporciona un idEstado válido
+    $request->validate([
+        'idEstado' => 'required|exists:estado_evento,id',
+    ]);
+
+    // Buscar el evento
+    $agenda = Agenda::findOrFail($id);
+
+    // Actualizar el estado
+    $agenda->update([
+        'idEstado' => 5,
+    ]);
+
+    return redirect()->back()->with('success', 'Estado del evento actualizado con éxito.');
+}
+
+
+public function accept(Request $request, $id)
+{
+    // Validar que se proporciona un idEstado válido
+    $request->validate([
+        'idEstado' => 'required|exists:estado_evento,id',
+    ]);
+
+    // Buscar el evento
+    $agenda = Agenda::findOrFail($id);
+
+    // Actualizar el estado
+    $agenda->update([
+        'idEstado' => 3,
+        'idEmpleado' => $request->idEmpleado,
+    ]);
+
+    // Obtener los datos del cliente y del empleado
+    $cliente = User::findOrFail($request->idEmpleado);
+    $empleado = User::findOrFail($request->idCliente);
+
+    // Preparar los datos para enviar por correo
+    $data = [
+        'nombreCliente' => $cliente->name . ' ' . $cliente->lastname,
+        'fecha' => $agenda->fecha,
+        'descripcion' => $agenda->descripcion,
+        'nombreEmpleado' => $empleado->name . ' ' . $empleado->lastname,
+    ];
+
+    // Enviar el correo
+    Mail::to($cliente->email)->send(new CitaConfirmada($data));
+
+    return redirect()->back()->with('success', 'Estado del evento actualizado con éxito.');
+}
 }

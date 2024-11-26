@@ -11,6 +11,7 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
+    
 
     const formatPrecio = (precio) => {
         return new Intl.NumberFormat('es-ES').format(precio);
@@ -99,10 +100,11 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
                     cuotaFija={cuotaFija.toFixed(2)}
                     vehiculo={vehiculo}
                     onClose={closeModal}
+                    lineaFinanciamiento= {lineaFinanciamiento}
                 />
             </Modal>
  
- {/*
+ 
             <div className="mt-4">
                 <h3 className="font-medium">Amortización</h3>
                 <table className="min-w-full border-collapse">
@@ -139,7 +141,7 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
                     <li><strong>Total a pagar:</strong> ${(totalCapital + totalIntereses).toFixed(2)}</li>
                 </ul>
             </div>
-            */}
+            
         </div>
     );
 };
