@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Head, usePage, Link } from "@inertiajs/react";
-import Modal from "react-modal";
-import AgendarCita from "../Agenda/AgendarCita";
 import NavbarClient from "@/Layouts/NavbarClient";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import dayjs from "dayjs";
-import FinanciacionPDF from "@/components/FinanciacionPDF";
 
 const Vehiculos = ({
     vehiculos,
@@ -88,18 +83,6 @@ const Vehiculos = ({
                 : selectedItems.filter((item) => item !== value)
         );
     };
-
-    {
-        /*   const openModal = (vehiculo) => {
-        setSelectedVehiculo(vehiculo);
-        setModalIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalIsOpen(false);
-        setSelectedVehiculo(null);
-    };*/
-    }
 
     const { user } = usePage().props.auth;
 
@@ -238,7 +221,6 @@ const Vehiculos = ({
                     </div>
 
                     <div className="w-3/4">
-                        <h2 className="text-2xl font-bold mb-4">Vehículos</h2>
                         {filteredVehiculos.length ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {filteredVehiculos.map((vehiculo) => (
@@ -251,39 +233,18 @@ const Vehiculos = ({
                                             })}
                                             className="block"
                                         >
-                                            <div
-                                                className="p-4 border border-gray-200 rounded-lg shadow-lg transition transform hover:scale-105"
-                                                style={{ maxWidth: "280px" }}
-                                            >
-                                                <h3 className="text-lg font-semibold mb-1">
-                                                    {vehiculo.marca}{" "}
-                                                    {vehiculo.modelo}
-                                                </h3>
-                                                <p className="text-gray-500 text-sm">
-                                                    Año: {vehiculo.anio}
-                                                </p>
-                                                <p className="text-gray-900 font-bold">
-                                                    Precio: {vehiculo.precio}
-                                                </p>
-
-
-                                                {/*user ? (
-            <PDFDownloadLink
-                document={<FinanciacionPDF vehiculo={vehiculo} user={user} />}
-                fileName={`${vehiculo.marca}-${vehiculo.modelo}-${dayjs().format('YYYY-MM-DD')}.pdf`}
-                className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full text-center hover:bg-red-700 block"
-            >
-                {({ loading }) => (loading ? 'Cargando documento...' : 'Presupuestar auto')}
-            </PDFDownloadLink>
-        ) : (
-            <Link
-                href={route('login')}
-                className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full text-center hover:bg-red-700 block"
-            >
-                Presupuestar auto
-            </Link>
-        )*/}
+                                            <div className="border rounded-lg shadow-md p-4">
+                                            <img
+                                                src={`/storage/${vehiculo.imagenes[0]?.urlImagen || 'default-image.jpg'}`}
+                                                alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+                                                className="w-full h-48 object-cover rounded-md"
+                                            />
+                                            <div className="p-2">
+                                                <h3 className="text-lg font-semibold">{vehiculo.marca} {vehiculo.modelo}</h3>
+                                                <p>Año: {vehiculo.anio}</p>
+                                                <p>Precio: ${vehiculo.precio}</p>
                                             </div>
+                                        </div>
                                         </Link>
                                     </div>
                                 ))}
@@ -294,10 +255,6 @@ const Vehiculos = ({
                     </div>
                 </div>
             </div>
-
-            {/*<Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Agendar Cita">
-                <AgendarCita vehiculo={selectedVehiculo} closeModal={closeModal} />
-            </Modal> */}
         </>
     );
 };

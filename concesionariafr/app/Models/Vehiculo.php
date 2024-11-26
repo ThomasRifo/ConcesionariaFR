@@ -28,6 +28,17 @@ class Vehiculo extends Model
     ];
 
     // Define las relaciones, si corresponde
+
+    public function imagenes()
+{
+    return $this->hasMany(ImagenVehiculo::class, 'idVehiculo');
+}
+
+public function imagenPrincipal()
+{
+    return $this->hasOne(ImagenVehiculo::class, 'idVehiculo')->where('imagenPrincipal', true);
+}
+
     public function categoria()
     {
         return $this->belongsTo(categoriaVehiculo::class, 'idCategoria');

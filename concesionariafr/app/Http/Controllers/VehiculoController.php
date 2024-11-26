@@ -17,8 +17,7 @@ class VehiculoController extends Controller
 
     public function index()
     {
-
-        $vehiculos = Vehiculo::all();
+        $vehiculos = Vehiculo::with('imagenes')->get();
         $marcas = Vehiculo::select('marca')->distinct()->get();
         $modelos = Vehiculo::select('modelo')->distinct()->get();
         $categorias = categoriaVehiculo::all();
@@ -53,55 +52,84 @@ class VehiculoController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'idCategoria' => 'required|integer',
-            'idCombustible' => 'required|integer',
-            'idTransmision' => 'required|integer',
-            'marca' => 'required|string|max:255',
-            'modelo' => 'required|string|max:255',
-            'anio' => 'required|integer',
-            'precio' => 'required|numeric',
-            'patente' => 'required|string|max:255',
-            'color' => 'required|string|max:255',
-            'kilometraje' => 'required|integer',
-        ]);
+{
+    $request->validate([
+        'idCategoria' => 'required|integer',
+        'idCombustible' => 'required|integer',
+        'idTransmision' => 'required|integer',
+        'marca' => 'required|string|max:255',
+        'modelo' => 'required|string|max:255',
+        'anio' => 'required|integer',
+        'precio' => 'required|numeric',
+        'patente' => 'required|string|max:255',
+        'color' => 'required|string|max:255',
+        'kilometraje' => 'required|integer',
+        'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        Vehiculo::create([
-            'idCategoria' => $request->idCategoria,
-            'idCombustible' => $request->idCombustible,
-            'idTransmision' => $request->idTransmision,
-            'marca' => $request->marca,
-            'modelo' => $request->modelo,
-            'anio' => $request->anio,
-            'precio' => $request->precio,
-            'patente' => $request->patente,
-            'color' => $request->color,
-            'kilometraje' => $request->kilometraje,
-            'idEstado' => 1,
-        ]);
+    $vehiculo = Vehiculo::create([
+        'idCategoria' => $request->idCategoria,
+        'idCombustible' => $request->idCombustible,
+        'idTransmision' => $request->idTransmision,
+        'marca' => $request->marca,
+        'modelo' => $request->modelo,
+        'anio' => $request->anio,
+        'precio' => $request->precio,
+        'patente' => $request->patente,
+        'color' => $request->color,
+        'kilometraje' => $request->kilometraje,
+        'idEstado' => 1,
+    ]);
 
-        return redirect()->route('vehiculos.index')->with('success', 'Auto creado exitosamente.');
-    }
-
-    public function show($marca, $modelo, $anio)
-    {
-        // Buscar el vehículo usando los parámetros de marca, modelo y año
-    
-
-        $vehiculo = Vehiculo::where('marca', $marca)
-            ->where('modelo', $modelo)
-            ->where('anio', $anio)
-            ->firstOrFail();
-            $vehiculo->increment('cantidadVistas');
-        $lineasFinanciamiento = LineaFinanciamiento::with('cuotas')->get();
-
-        // Retornar la vista con los detalles del vehículo
-        return Inertia::render('Vehiculos/VehiculoDetalle', [
-            'vehiculo' => $vehiculo,
-            'lineasFinanciamiento' => $lineasFinanciamiento,
+    if ($request->hasFile('imagen')) {
+        $path = $request->file('imagen')->store('imagenes', 'public');
+        $vehiculo->imagenes()->create([
+            'urlImagen' => $path,
+            'imagenPrincipal' => true,
         ]);
     }
+
+    return redirect()->route('vehiculos.index')->with('success', 'Auto creado exitosamente.');
+}
+
+
+public function show($marca, $modelo, $anio)
+{
+    // Buscar el vehículo con sus relaciones
+    $vehiculo = Vehiculo::with(['imagenes', 'combustible', 'transmision', 'categoria'])
+        ->where('marca', $marca)
+        ->where('modelo', $modelo)
+        ->where('anio', $anio)
+        ->firstOrFail();
+
+    $vehiculo->increment('cantidadVistas');
+
+    $vehiculoDetalle = [
+        'id' => $vehiculo->id,
+        'marca' => $vehiculo->marca,
+        'modelo' => $vehiculo->modelo,
+        'anio' => $vehiculo->anio,
+        'precio' => $vehiculo->precio,
+        'kilometraje' => $vehiculo->kilometraje,
+        'color' => $vehiculo->color,
+        'patente' => $vehiculo->patente,
+        'cantidadVistas' => $vehiculo->cantidadVistas,
+        'categoria' => $vehiculo->categoria ? $vehiculo->categoria->tipo : 'No especificada',
+        'combustible' => $vehiculo->combustible ? $vehiculo->combustible->tipo : 'No especificado',
+        'transmision' => $vehiculo->transmision ? $vehiculo->transmision->tipo : 'No especificada',
+        'imagenes' => $vehiculo->imagenes,
+    ];
+
+    $lineasFinanciamiento = LineaFinanciamiento::with('cuotas')->get();
+
+    return Inertia::render('Vehiculos/VehiculoDetalle', [
+        'vehiculo' => $vehiculoDetalle,
+        'lineasFinanciamiento' => $lineasFinanciamiento,
+    ]);
+}
+
+
+
 
 
 }

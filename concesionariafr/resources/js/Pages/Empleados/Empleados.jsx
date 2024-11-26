@@ -18,20 +18,7 @@ const Empleados = ({ empleados }) => {
                             <h3 className="text-xl">{empleado.name} {empleado.lastname}</h3>
                             <p>Email: {empleado.email}</p>
                             <p>DNI: {empleado.dni}</p>
-                            <h4 className="mt-2">Ventas:</h4>
-                            {empleado.ventas.length ? (
-                                <ul>
-                                    {empleado.ventas.map((venta) => (
-                                        <li key={venta.id}>
-                                            <p>ID Vehículo: {venta.idVehiculo}</p>
-                                            <p>Monto Total: {venta.montoTotal}</p>
-                                            <p>Fecha: {venta.fechaVenta}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p>No hay ventas para este empleado.</p>
-                            )}
+                            
                         </div>
                     ))
                 ) : (

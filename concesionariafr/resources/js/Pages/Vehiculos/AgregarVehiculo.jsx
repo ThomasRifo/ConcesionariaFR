@@ -15,12 +15,24 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
         precio: '',
         patente: '',
         color: '',
-        kilometraje: ''
+        kilometraje: '',
+        imagen: null,
     });
+
+    const handleFileChange = (e) => {
+        setData('imagen', e.target.files[0]);
+    };
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('vehiculos.store'));
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, value);
+        });
+        post(route('vehiculos.store'), {
+            data: formData,
+            forceFormData: true,
+        });
     };
 
     return (
@@ -31,7 +43,7 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
             
         <div className="max-w-2xl mx-auto p-0 bg-white shadow-md rounded-lg">
             <h2 className="text-2xl font-semibold text-gray-700 mb-6">Crear Nuevo Vehículo</h2>
-            <form onSubmit={submit} className="space-y-4">
+            <form onSubmit={submit} className="space-y-4" method='POST' encType='multipart/form-data'>
                 {/* Select de Categoría */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700">Categoría</label>
@@ -155,6 +167,17 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                         className="mt-1 block w-full"
                     />
                     {errors.kilometraje && <span className="text-red-500 text-sm">{errors.kilometraje}</span>}
+                </div>
+                
+                <div>
+                        <label className="block text-sm font-medium text-gray-700">Imagen</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                        />
+                        {errors.imagen && <span className="text-red-500 text-sm">{errors.imagen}</span>}
                 </div>
 
                 <div className="mt-6">
