@@ -37,9 +37,37 @@ class EmpleadoController extends Controller
 
     }
 
-    public function edit(Request $request){
-        
-    }
+    public function edit($id)
+{
+    $empleado = User::findOrFail($id);
+    return response()->json($empleado);
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'lastname' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,'.$id,
+        'phone' => 'required|string|max:255|unique:users,phone,'.$id,
+        'dni' => 'required|string|max:255|unique:users,dni,'.$id,
+    ]);
+
+    $empleado = User::findOrFail($id);
+    $empleado->update($request->only('name', 'lastname', 'email', 'phone', 'dni'));
+
+    return redirect()->back();
+}
+
+public function destroy($id)
+{
+    $empleado = User::findOrFail($id);
+
+    // Elimina al usuario
+    $empleado->delete();
+}
+
+
 
 
     /**

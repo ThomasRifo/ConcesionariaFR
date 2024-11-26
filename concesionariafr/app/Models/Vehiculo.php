@@ -44,6 +44,11 @@ public function imagenPrincipal()
         return $this->belongsTo(categoriaVehiculo::class, 'idCategoria');
     }
 
+    public function estado()
+    {
+        return $this->belongsTo(estadoVehiculo::class, 'idEstado');
+    }
+
     public function combustible()
     {
         return $this->belongsTo(Combustible::class, 'idCombustible');

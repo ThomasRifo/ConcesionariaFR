@@ -35,12 +35,11 @@ export default function Register() {
     return (
 
                 
-        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 leading-tight justify-start">Registrar Empleado</h2>}
-        >
+        <AuthenticatedLayout>
     <GuestLayout2 >
             <Head title="Registrar Empleado" />
         
-            <h2 className='m-5 p-5 text-center text-2xl text-orange-800'>Registrar un empleado</h2>
+            <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Registro Empleados</h2>
             <form onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Nombre" />
@@ -48,7 +47,7 @@ export default function Register() {
                     <TextInput
                         id="name"
                         name="name"
-                        placeholder="Nombre del empleado"
+                        placeholder="Nombre/s"
                         value={data.name}
                         className="mt-1 block w-full"
                         autoComplete="name"
@@ -66,7 +65,7 @@ export default function Register() {
                     <TextInput
                         id="lastname"
                         name="lastname"
-                        placeholder="Nombre del empleado"
+                        placeholder="Apellido/s"
                         value={data.lastname}
                         className="mt-1 block w-full"
                         autoComplete="name"
@@ -83,6 +82,7 @@ export default function Register() {
                     <TextInput
                         id="dni"
                         name="dni"
+                        placeholder="DNI/CUIT"
                         value={data.dni}
                         className="mt-1 block w-full"
                         onChange={(e) => setData('dni', e.target.value)}
@@ -98,6 +98,7 @@ export default function Register() {
                     <TextInput
                         id="phone"
                         name="phone"
+                        placeholder=""
                         value={data.phone}
                         className="mt-1 block w-full"
                         onChange={(e) => setData('phone', e.target.value)}
@@ -114,9 +115,9 @@ export default function Register() {
                         id="email"
                         type="email"
                         name="email"
+                        placeholder="example@ej.com"
                         value={data.email}
                         className="mt-1 block w-full"
-                        autoComplete="username"
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />
@@ -126,7 +127,7 @@ export default function Register() {
 
                 <div className="flex items-center justify-center mt-4">
                     <PrimaryButton disabled={processing}>
-                        Registrar Empleado
+                        Registrar
                     </PrimaryButton>
                 </div>
             </form>

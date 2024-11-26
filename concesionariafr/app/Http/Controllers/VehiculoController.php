@@ -7,6 +7,7 @@ use App\Models\categoriaVehiculo;
 use App\Models\Combustible;
 use App\Models\Transmision;
 use App\Models\LineaFinanciamiento;
+use App\Models\estadoVehiculo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -34,7 +35,11 @@ class VehiculoController extends Controller
         ]);
     }
 
-
+    public function destacados() {
+        $vehiculos = Vehiculo::with('imagenes')->get();
+        return Inertia::render('home', ['vehiculos' => $vehiculos]);
+    }
+    
 
     public function create()
     {
@@ -128,8 +133,53 @@ public function show($marca, $modelo, $anio)
     ]);
 }
 
+        public function edit()
+    {
+        $vehiculos = Vehiculo::with(['imagenes', 'combustible', 'transmision', 'categoria'])->get();
+        $categorias = categoriaVehiculo::all();
+        $combustibles = Combustible::all();
+        $transmisiones = Transmision::all();
+        $estados = estadoVehiculo::all();
+
+        return Inertia::render('Vehiculos/EditarVehiculo', [
+            'vehiculos' => $vehiculos,
+            'categorias' => $categorias,
+            'combustibles' => $combustibles,
+            'transmisiones' => $transmisiones,
+            'estados' => $estados,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+{
+    $vehiculo = Vehiculo::findOrFail($id);
+    $vehiculo->update([
+        'marca' => $request->marca,
+        'modelo' => $request->modelo,
+        'anio' => $request->anio,
+        'patente' => $request->patente,
+        'color' => $request->color,
+        'kilometraje' => $request->kilometraje,
+        'precio' => $request->precio,
+        'idCategoria' => $request->idCategoria,
+        'idCombustible' => $request->idCombustible,
+        'idTransmision' => $request->idTransmision,
+        'idEstado' => $request->idEstado,
+    ]);
+
+    return redirect()->route('vehiculos.edit')->with('success', 'Vehículo actualizado correctamente');
+}
 
 
+    public function destroy($id)
+    {
 
+    $vehiculo = Vehiculo::findOrFail($id);
+
+    $vehiculo->delete();
+
+    return redirect()->route('vehiculos.edit')->with('success', 'Vehículo eliminado exitosamente.');
+
+    }
 
 }
