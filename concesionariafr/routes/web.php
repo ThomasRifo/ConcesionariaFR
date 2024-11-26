@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\VehiculoController;
-use App\Models\estadoVehiculo;
+use App\Models\Vehiculo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,11 +13,14 @@ use Spatie\Permission\Models\Role;
 
 // Ruta raíz (inicio)
 Route::get('/', function () {
+    $vehiculos = Vehiculo::with('imagenes')->get(); // Obtén todos los vehículos de la base de datos
+
     return Inertia::render('Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'vehiculos' => $vehiculos, // Pasa los vehículos a la vista
     ]);
 })->name('home');
 
@@ -44,6 +47,9 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
 
     Route::post('/vehiculos/registrar-vehiculo', [VehiculoController::class, 'store'])->name('vehiculos.store');
     Route::get('/vehiculos/create', [VehiculoController::class, 'create'])->name('vehiculos.create');
+    Route::get('/vehiculos/edit', [VehiculoController::class, 'edit'])->name('vehiculos.edit');
+    Route::put('/vehiculos/{id}', [VehiculoController::class, 'update'])->name('vehiculos.update');
+    Route::delete('/vehiculos/{id}', [VehiculoController::class, 'destroy'])->name('vehiculos.destroy');
 
 });
 
@@ -66,11 +72,11 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
 Route::post('/agenda/storeCita', [AgendaController::class, 'storeCita'])->name('agenda.storeCita')->middleware('role:cliente');;
 
 Route::group(['middleware' => ['role:admin']], function () {
-    Route::get('/Empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
+    Route::get('/empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
     Route::get('/Empleados/registrar-empleados', [EmpleadoController::class, 'create'])->name('registeredEmployed');
     Route::post('/Empleados/registrar-empleados', [EmpleadoController::class, 'store']);
-    Route::get('/Empleados/empleados', [EmpleadoController::class, 'edit'])->name('empleados.edit');
-    Route::patch('/Empleados/empleados', [EmpleadoController::class, 'update'])->name('empleados.update');
+    Route::put('/empleados/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
+    Route::delete('/empleados/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
 });
 
 Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes']);

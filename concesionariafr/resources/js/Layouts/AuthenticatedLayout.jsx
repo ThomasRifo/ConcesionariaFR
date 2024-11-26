@@ -87,7 +87,7 @@ export default function Authenticated({ header, children }) {
                                                             : "focus:border-b-2 border-indigo-700"
                                                     }
                                                 >
-                                                    Registros
+                                                    Lista de Empleados
                                                 </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
@@ -119,6 +119,18 @@ export default function Authenticated({ header, children }) {
                                                     }
                                                 >
                                                     Agregar vehículo
+                                                </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route("vehiculos.edit")}
+                                                    className={
+                                                        route().current(
+                                                            "vehiculos.edit"
+                                                        )
+                                                            ? "border-b-2  bg-gray-200 text-indigo-800 focus:border-indigo-700"
+                                                            : "focus:border-b-2 border-indigo-700"
+                                                    }
+                                                >
+                                                    Editar Vehiculo
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
                                                     href={route("vehiculos.index")}

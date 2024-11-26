@@ -41,7 +41,7 @@ const Navbar = ({ isBlackBg }) => {
                         href={route("vehiculos.index")}
                         className="text-white hover:text-gray-300 "
                     >
-                        Usados
+                        Vehiculos
                     </Link>
                     <Link
                         href="#contact"
