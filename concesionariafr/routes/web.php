@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\AutosClienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\VehiculoController;
+use App\Models\AutosCliente;
 use App\Models\Vehiculo;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -52,6 +54,11 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
     Route::delete('/vehiculos/{id}', [VehiculoController::class, 'destroy'])->name('vehiculos.destroy');
 
 });
+
+
+Route::post('/favoritos/add', [AutosClienteController::class, 'store'])->name('favoritos.add');
+Route::delete('/favoritos/remove', [AutosClienteController::class, 'destroy'])->name('favoritos.remove');
+Route::get('/favoritos/list', [AutosClienteController::class, 'index'])->name('favoritos.list');
 
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {

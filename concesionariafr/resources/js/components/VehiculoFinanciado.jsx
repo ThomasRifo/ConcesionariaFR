@@ -105,42 +105,7 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
             </Modal>
  
  
-            <div className="mt-4">
-                <h3 className="font-medium">Amortización</h3>
-                <table className="min-w-full border-collapse">
-                    <thead>
-                        <tr>
-                            <th className="border-b p-2">Cuota</th>
-                            <th className="border-b p-2">Fecha de pago</th>
-                            <th className="border-b p-2">Capital</th>
-                            <th className="border-b p-2">Intereses</th>
-                            <th className="border-b p-2">Total</th>
-                            <th className="border-b p-2">Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {amortizacion.map((cuota) => (
-                            <tr key={cuota.numeroCuota}>
-                                <td className="border-b p-2">{cuota.numeroCuota}</td>
-                                <td className="border-b p-2">{cuota.fechaPago}</td>
-                                <td className="border-b p-2">${cuota.capital.toFixed(2)}</td>
-                                <td className="border-b p-2">${cuota.intereses.toFixed(2)}</td>
-                                <td className="border-b p-2">${cuota.cuota.toFixed(2)}</td>
-                                <td className="border-b p-2">${cuota.saldoRestante.toFixed(2)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="mt-4">
-                <h3 className="font-medium">Totales</h3>
-                <ul>
-                    <li><strong>Total Capital:</strong> ${totalCapital.toFixed(2)}</li>
-                    <li><strong>Total Intereses:</strong> ${totalIntereses.toFixed(2)}</li>
-                    <li><strong>Total a pagar:</strong> ${(totalCapital + totalIntereses).toFixed(2)}</li>
-                </ul>
-            </div>
+    
             
         </div>
     );
