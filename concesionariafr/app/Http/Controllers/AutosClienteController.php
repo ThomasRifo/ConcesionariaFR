@@ -6,72 +6,48 @@ use App\Models\AutosCliente;
 use App\Models\User; // Asegúrate de importar el modelo User para clientes
 use App\Models\Vehiculo; // Asegúrate de importar el modelo Vehiculo
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AutosClienteController extends Controller
 {
-    // Mostrar una lista de autos_cliente
-    public function index()
-    {
-        $autosClientes = AutosCliente::with('cliente', 'vehiculo')->get();
-        return view('autos_cliente.index', compact('autosClientes'));
-    }
 
-    // Mostrar el formulario para crear un nuevo auto_cliente
-    public function create()
+    public function index($clienteId)
     {
-        $clientes = User::all(); // Obtener todos los clientes
-        $vehiculos = Vehiculo::all(); // Obtener todos los vehículos
-        return view('autos_cliente.create', compact('clientes', 'vehiculos'));
-    }
+        $favoritos = AutosCliente::where('idCliente', $clienteId)
+            ->with('vehiculo')  // Asumimos que el modelo AutosCliente tiene una relación con Vehiculo
+            ->get();
 
-    // Almacenar un nuevo auto_cliente
+        return Inertia::render('Vehiculos/Vehiculo', [
+            'favoritos' => $favoritos,
+        ]);
+    }
     public function store(Request $request)
     {
         $request->validate([
-            'idCliente' => 'required|exists:users,id',
-            'idVehiculo' => 'required|exists:vehiculos,id',
+            'vehiculoId' => 'required|exists:vehiculos,id',
+            'clienteId' => 'required|exists:users,id',
         ]);
 
-        AutosCliente::create($request->all());
+        // Crear un nuevo registro en la tabla autos_cliente
+        AutosCliente::create([
+            'idCliente' => $request->clienteId,
+            'idVehiculo' => $request->vehiculoId,
+        ]);
 
-        return redirect()->route('autos_cliente.index')
-                         ->with('success', 'Auto Cliente creado exitosamente.');
+        return response()->json(['message' => 'Vehículo agregado a favoritos.']);
     }
 
-    // Mostrar los detalles de un auto_cliente
-    public function show(AutosCliente $autosCliente)
-    {
-        return view('autos_cliente.show', compact('autosCliente'));
-    }
-
-    // Mostrar el formulario para editar un auto_cliente existente
-    public function edit(AutosCliente $autosCliente)
-    {
-        $clientes = User::all(); // Obtener todos los clientes
-        $vehiculos = Vehiculo::all(); // Obtener todos los vehículos
-        return view('autos_cliente.edit', compact('autosCliente', 'clientes', 'vehiculos'));
-    }
-
-    // Actualizar un auto_cliente existente
-    public function update(Request $request, AutosCliente $autosCliente)
+    public function destroy(Request $request)
     {
         $request->validate([
-            'idCliente' => 'required|exists:users,id',
-            'idVehiculo' => 'required|exists:vehiculos,id',
+            'vehiculoId' => 'required|exists:vehiculos,id',
+            'clienteId' => 'required|exists:users,id',
         ]);
 
-        $autosCliente->update($request->all());
+        AutosCliente::where('idVehiculo', $request->vehiculoId)
+            ->where('idCliente', $request->clienteId)
+            ->delete();
 
-        return redirect()->route('autos_cliente.index')
-                         ->with('success', 'Auto Cliente actualizado exitosamente.');
-    }
-
-    // Eliminar un auto_cliente existente
-    public function destroy(AutosCliente $autosCliente)
-    {
-        $autosCliente->delete();
-
-        return redirect()->route('autos_cliente.index')
-                         ->with('success', 'Auto Cliente eliminado exitosamente.');
+        return response()->json(['message' => 'Vehículo eliminado de favoritos.']);
     }
 }
