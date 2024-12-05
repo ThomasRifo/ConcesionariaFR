@@ -112,6 +112,8 @@ export default function DropdownIcon() {
                                             return route("citaAceptada", { id: notification.id });
                                         case "nuevaCita":
                                             return route("notificacion", { id: notification.id });
+                                            case "citaReprogramada":
+                                                return route("citaReprogramada", { id: notification.id });
                                         
                                     }
                                 })()}
@@ -150,6 +152,19 @@ export default function DropdownIcon() {
                                                         ?.titulo ||
                                                         "Nueva Notificación"}
                                                 </strong>
+                                            </>
+                                        )}
+                                        {notification?.data?.tipo ==
+                                            "citaReprogramada" && (
+                                            <>
+                                                Tu cita para ver {" "}
+                                                <strong className="text-base">
+                                                    {notification?.data
+                                                        ?.titulo ||
+                                                        "Nueva Notificación"}
+                                                </strong>
+                                                {" "} fue reprogramada.
+                                                
                                             </>
                                         )}
 

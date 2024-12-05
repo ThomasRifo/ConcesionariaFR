@@ -20,7 +20,8 @@ export default function ShowCita({ currentEvent }) {
             <div className="w-1/2 m-auto mt-60 p-10">
                 <Head title="Detalle de la Cita" />
                 <h2 className="m-5 p-5 text-center text-2xl text-orange-800">
-                    Detalle de la Cita
+                {currentEvent?.idEstado === 2 ? "Cita Reprogramada" : "Detalle de la Cita"}
+
                 </h2>
                 <form autoComplete="off">
                     {/* Título */}
@@ -75,6 +76,7 @@ export default function ShowCita({ currentEvent }) {
                         <InputError message="" className="mt-2" />
                     </div>
                 </form>
+                {currentEvent?.idEstado === 2 ? <div className="text-red-600 mt-8 text-xl m-center">En caso de no poder asistir al horario reprogramado, por favor avisar por whatsapp al <strong>2995724166</strong> para coordinar nueva fecha </div> : ""}
             </div>
         </>
     );

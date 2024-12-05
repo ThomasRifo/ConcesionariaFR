@@ -38,4 +38,19 @@ public function citaAceptada($id)
     return redirect()->route('home');
 }
     
+
+
+public function citaReprogramada($id)
+{
+    $notification = DatabaseNotification::findOrFail($id); // Recuperar la notificación
+    $notification->markAsRead();
+
+ 
+    // Verificar el tipo de notificación y redirigir al show de la agenda
+    if ($notification->type === NuevaCita::class) {
+        return Redirect::action([AgendaController::class, 'showCita'], $notification->data['cita']);
+    }
+
+    return redirect()->route('home');
+}
 }

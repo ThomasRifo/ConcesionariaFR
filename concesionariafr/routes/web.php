@@ -101,5 +101,6 @@ Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes
 
 Route::put('/notificacion/{id}', [NotificacionController::class, 'notificacion'])->name('notificacion');
 Route::put('/citaAceptada/{id}', [NotificacionController::class, 'citaAceptada'])->name('citaAceptada');
+Route::put('/citaReprogramada/{id}', [NotificacionController::class, 'citaReprogramada'])->name('citaReprogramada');
 
 require __DIR__.'/auth.php';

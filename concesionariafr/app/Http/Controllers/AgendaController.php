@@ -178,7 +178,7 @@ public function storeCita(Request $request)
                 // Obtener los datos del cliente y del empleado
     $cliente = User::findOrFail($request->idCliente);
     $empleado = User::findOrFail($request->idEmpleado);
-
+    $tipo = 'citaReprogramada';
     $agenda->update([
         'idEstado' => 2,
     ]);
@@ -191,9 +191,18 @@ public function storeCita(Request $request)
         'nombreEmpleado' => $empleado->name . ' ' . $empleado->lastname,
     ];
 
+
     // Enviar el correo
     Mail::to($cliente->email)->send(new CitaReprogramada($data));
         }
+
+        
+    $cliente->notify(new \App\Notifications\NuevaCita(
+        $agenda,
+        $cliente,
+        $tipo,
+        ['database', 'broadcast']
+    ));
     
         return redirect()->route('agenda.index')->with('success', 'Evento actualizado con éxito.');
     }
