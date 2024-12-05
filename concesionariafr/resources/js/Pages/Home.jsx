@@ -1,9 +1,12 @@
 import { Head, Link } from '@inertiajs/react';
 import NavbarClient from '@/Layouts/NavbarClient';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules'; // Importa módulos necesarios
+import 'swiper/css'; // Estilos básicos
+import 'swiper/css/navigation'; // Estilos para navegación
+import 'swiper/css/pagination'; // Estilos para paginación
 
 export default function Welcome({ vehiculos }) {
-
-
     return (
         <>
             <Head title="Vehículos" />
@@ -26,47 +29,58 @@ export default function Welcome({ vehiculos }) {
                 </div>
             </div>
 
-            {/* Contenedor de vehículos */}
+            {/* Contenedor de vehículos con carrusel */}
             <div className="container mx-auto my-12 px-4">
                 <h2 className="text-3xl font-bold mb-6 text-center">Nuestros Vehículos</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <Swiper
+                    modules={[Navigation, Pagination]} // Activa módulos
+                    spaceBetween={20} // Espacio entre slides
+                    slidesPerView={1} // Slides visibles
+                    breakpoints={{
+                        640: { slidesPerView: 2 },
+                        768: { slidesPerView: 3 },
+                        1024: { slidesPerView: 4 },
+                    }}
+                    navigation // Habilita botones de navegación
+                    pagination={{ clickable: true }} // Habilita paginación
+                >
+                    
                     {vehiculos.map((vehiculo) => (
-                        <div
-                            key={vehiculo.id}
-                            className="border rounded-lg shadow-lg overflow-hidden bg-white"
-                        >
-                            <img
-                                src={`/storage/${vehiculo.imagenes[0]?.urlImagen || 'default-image.jpg'}`}
-                                alt={`${vehiculo.marca} ${vehiculo.modelo}`}
-                                className="w-full h-48 object-cover"
-                            />
-                            <div className="p-4 text-center">
-                                <h3 className="text-2xl font-bold mb-2">
-                                    {vehiculo.marca} {vehiculo.modelo}
-                                </h3>
-                                <p className="text-black-600 font-bold text-2xl mt-4">
-                                    {new Intl.NumberFormat('es-AR', {
-                                        style: 'currency',
-                                        currency: 'ARS',
-                                        maximumFractionDigits: 0,
-                                    }).format(vehiculo.precio)}
-                                </p>
-                                <Link
-                                    href={route("vehiculo.show", {
-                                        marca: vehiculo.marca,
-                                        modelo: vehiculo.modelo,
-                                        anio: vehiculo.anio,
-                                    })}
-                                    className="block"
-                                >
-                                    <button className="bg-white text-black border border-black w-full mt-4 p-3 rounded transition-all duration-300 hover:bg-black hover:text-white">
-                                        Ver Detalles
-                                    </button>
-                                </Link>
+                        <SwiperSlide key={vehiculo.id}>
+                            <div className="border rounded-lg shadow-lg overflow-hidden bg-white">
+                                <img
+                                    src={`/storage/${vehiculo.imagenes[0]?.urlImagen || 'default-image.jpg'}`}
+                                    alt={`${vehiculo.marca} ${vehiculo.modelo}`}
+                                    className="w-full h-48 object-cover"
+                                />
+                                <div className="p-4 text-center">
+                                    <h3 className="text-2xl font-bold mb-2">
+                                        {vehiculo.marca} {vehiculo.modelo}
+                                    </h3>
+                                    <p className="text-black-600 font-bold text-2xl mt-4">
+                                        {new Intl.NumberFormat('es-AR', {
+                                            style: 'currency',
+                                            currency: 'ARS',
+                                            maximumFractionDigits: 0,
+                                        }).format(vehiculo.precio)}
+                                    </p>
+                                    <Link
+                                        href={route("vehiculo.show", {
+                                            marca: vehiculo.marca,
+                                            modelo: vehiculo.modelo,
+                                            anio: vehiculo.anio,
+                                        })}
+                                        className="block"
+                                    >
+                                        <button className="bg-white text-black border border-black w-full mt-4 p-3 rounded transition-all duration-300 hover:bg-black hover:text-white">
+                                            Ver Detalles
+                                        </button>
+                                    </Link>
+                                </div>
                             </div>
-                        </div>
+                        </SwiperSlide>
                     ))}
-                </div>
+                </Swiper>
             </div>
         </>
     );

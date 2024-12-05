@@ -42,6 +42,37 @@ export default function Authenticated({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                {(isAdmin || isEmpleado) && (
+                                    <div className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300">
+                                        <Dropdown className="h-full w-full">
+                                            <Dropdown.Trigger className="h-full w-full">
+                                                <span className="inline-flex rounded-md w-full h-full">
+                                                    <button
+                                                        type="button"
+                                                        className="w-full h-full inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                                                    >
+                                                        Clientes
+                                                    </button>
+                                                </span>
+                                            </Dropdown.Trigger>
+
+                                            <Dropdown.Content>
+                                                <Dropdown.Link
+                                                    href={route("clientes.index")}
+                                                    className={
+                                                        route().current(
+                                                            "clientes.index"
+                                                        )
+                                                            ? "border-b-2  bg-gray-200 text-indigo-800 focus:border-indigo-700"
+                                                            : "focus:border-b-2 border-indigo-700"
+                                                    }
+                                                >
+                                                    Lista de Clientes
+                                                </Dropdown.Link>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </div>
+                                )}
                                 {isAdmin && (
                                     <div className="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300">
                                         <Dropdown className="h-full w-full">
@@ -227,14 +258,19 @@ export default function Authenticated({ header, children }) {
                                         <Dropdown.Link
                                             href={route("profile.edit")}
                                         >
-                                            Profile
+                                            Editar Perfil
+                                        </Dropdown.Link>
+                                        <Dropdown.Link
+                                        href={route("favoritos.list")}
+                                        >
+                                        Favoritos
                                         </Dropdown.Link>
                                         <Dropdown.Link
                                             href={route("logout")}
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            Cerrar Sesión
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>

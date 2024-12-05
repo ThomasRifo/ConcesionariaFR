@@ -50,12 +50,6 @@ const Navbar = ({ isBlackBg }) => {
                     >
                         Vehiculos
                     </Link>
-                    <Link
-                        href="#contact"
-                        className="text-gray-200 hover:text-gray-300"
-                    >
-                        Contacto
-                    </Link>
                     {!user && (
                         <>
                     <Link

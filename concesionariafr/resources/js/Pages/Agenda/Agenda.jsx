@@ -213,13 +213,7 @@ export default function Agenda() {
 
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 leading-tight justify-start">
-                    Calendario
-                </h2>
-            }
-        >
+        <AuthenticatedLayout>
             <Head title="Calendario" />
             <div className="">
                 <div className="w-4/6 h-svh m-auto ">

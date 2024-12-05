@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\VehiculoController;
+use App\Http\Controllers\ClienteController;
 use App\Models\AutosCliente;
 use App\Models\Vehiculo;
 use Illuminate\Foundation\Application;
@@ -86,6 +87,12 @@ Route::group(['middleware' => ['role:admin']], function () {
     Route::post('/Empleados/registrar-empleados', [EmpleadoController::class, 'store']);
     Route::put('/empleados/{id}', [EmpleadoController::class, 'update'])->name('empleados.update');
     Route::delete('/empleados/{id}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+});
+
+Route::group(['middleware' => ['role:admin|empleado']], function () {
+    Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
+    Route::put('/clientes/{id}', [ClienteController::class, 'update'])->name('clientes.update');
+    Route::delete('/clientes/{id}', [ClienteController::class, 'destroy'])->name('clientes.destroy');
 });
 
 Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes']);
