@@ -2,6 +2,7 @@ import NavLink from "@/components/NavLink";
 import Dropdown from "@/Components/Dropdown";
 import { Link, usePage } from "@inertiajs/react";
 import React, { useState, useEffect } from "react";
+import DropdownIcon from "@/components/DropdownIcon";
 
 const Navbar = ({ isBlackBg }) => {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -69,7 +70,12 @@ const Navbar = ({ isBlackBg }) => {
 
                     {/* Dropdown con nombre de usuario */}
                     {user && (
+                        <>
+                                                    <div className=" pb-3">
+                                <DropdownIcon></DropdownIcon>
+                            </div>
                         <div className="relative">
+
                             <Dropdown>
                                 <Dropdown.Trigger>
                                     <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-hiden hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
@@ -108,6 +114,7 @@ const Navbar = ({ isBlackBg }) => {
                                 </Dropdown.Content>
                             </Dropdown>
                         </div>
+                        </>
                     )}
                 </div>
             </nav>

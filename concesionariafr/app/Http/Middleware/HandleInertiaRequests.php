@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -31,10 +32,20 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $empleados = User::role('empleado')->get()->map(function ($empleado) {
+            return [
+                'id' => $empleado->id,
+                'name' => $empleado->nombre,
+                'lastname' => $empleado->apellido,
+            ];
+        });
+
         return [
+
+
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? $request->user()->load('roles') : null,
                 'unreadNotificationsCount' => Auth::check() 
                     ? Auth::user()->unreadNotifications->count() 
                     : 0,
@@ -42,6 +53,7 @@ class HandleInertiaRequests extends Middleware
                     ? Auth::user()->unreadNotifications
                     : collect(), // Retorna una colección vacía si no hay usuario
             ],
+            'empleados' => $empleados,
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

@@ -22,6 +22,7 @@ class NuevaCita extends Notification
     public function __construct(
         private readonly Agenda $agenda,
         private readonly User $user, 
+        private readonly string $tipo,
         private readonly array $canales,)
     {
 
@@ -40,6 +41,7 @@ class NuevaCita extends Notification
             'titulo' => $this->agenda->titulo,
             'fecha' => $this->agenda->fecha,
             'idEstado' =>$this->agenda->idEstado,
+            'tipo' =>$this->tipo,
         ];
     }
 
@@ -51,6 +53,7 @@ class NuevaCita extends Notification
                 'descripcion' => $this->agenda->descripcion,
                 'fecha' => $this->agenda->fecha,
                 'idEstado' =>$this->agenda->idEstado,
+                'tipo' =>$this->tipo,
             ],
         ]);
     }

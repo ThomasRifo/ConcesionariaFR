@@ -8,7 +8,7 @@ import dayjs from "dayjs";
 import { useState, useEffect } from "react";
 import SearchClientes from "@/components/SearchClientes";
 
-export default function FormAgenda({ currentEvent, closeModal, handleEventChange }) {
+export default function AgendaShow({ currentEvent, closeModal, handleEventChange }) {
     const user = usePage().props.auth.user;
     
     // Lógica para personalizar los campos 'titulo' y 'descripcion'
@@ -45,9 +45,6 @@ export default function FormAgenda({ currentEvent, closeModal, handleEventChange
 
     const submit = (e) => {
         e.preventDefault();
-
-        console.log("Datos del formulario antes de enviar:", data);  // Verifica aquí los valores
-
         const newEvent = {
             titulo: data.titulo,
             descripcion: data.descripcion,

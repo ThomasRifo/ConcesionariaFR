@@ -21,7 +21,6 @@ export default function AgendarCita({ closeModal, vehiculo }) {
 
     const { data, setData, post, processing, errors } = useForm({
         fecha: "",
-        hora: "",
         idCliente: user.id, 
         idEmpleado: 1, 
         idTipoEvento: 2, 
@@ -30,12 +29,12 @@ export default function AgendarCita({ closeModal, vehiculo }) {
         descripcion: descripcion, 
     });
 
-    const submit = (e) => {
+    // Función para manejar el envío del formulario
+    const postHandler = (e) => {
         e.preventDefault();
-        const fechaHora = dayjs(`${data.fecha} ${data.hora}`).format("YYYY-MM-DD HH:mm:ss");
 
         const newCita = {
-            fecha: fechaHora, 
+            fecha: data.fecha, 
             idCliente: data.idCliente,
             idEmpleado: data.idEmpleado, 
             idTipoEvento: data.idTipoEvento, 
@@ -62,12 +61,13 @@ export default function AgendarCita({ closeModal, vehiculo }) {
             <Head title="Agendar Cita" />
             <h2 className="m-5 p-5 text-center text-2xl text-orange-800">Agendar Cita</h2>
 
-            <form onSubmit={submit} autoComplete="off">
-                <div>
-                    <InputLabel htmlFor="fecha" value="Fecha" />
+            <form onSubmit={postHandler} autoComplete="off">
+                <div className="mt-4">
+                    <InputLabel htmlFor="fecha" value="Fecha y Hora" />
                     <TextInput
                         id="fecha"
-                        type="date"
+                        type="datetime-local"
+                        name="fecha"
                         value={data.fecha}
                         className="mt-1 block w-full"
                         onChange={(e) => setData("fecha", e.target.value)}
@@ -75,19 +75,6 @@ export default function AgendarCita({ closeModal, vehiculo }) {
                         required
                     />
                     <InputError message={errors.fecha} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="hora" value="Hora" />
-                    <TextInput
-                        id="hora"
-                        type="time"
-                        value={data.hora}
-                        className="mt-1 block w-full"
-                        onChange={(e) => setData("hora", e.target.value)}
-                        required
-                    />
-                    <InputError message={errors.hora} className="mt-2" />
                 </div>
 
                 <div className="mt-4">

@@ -15,7 +15,8 @@ use App\Mail\CitaReprogramada;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewNotification;
 use Illuminate\Notifications\Notification;
-use Spatie\Permission\Contracts\Role;
+use Spatie\Permission\Models\Role;
+
 
 class AgendaController extends Controller
 {
@@ -119,6 +120,7 @@ public function storeCita(Request $request)
 
     $empleados = User::role('empleado')->get(); // Spatie role permission
     $admins = User::role('admin')->get();       // Spatie role permission
+    $tipo = 'nuevaCita';
 
     // Combinar empleados y admins
     $usuariosNotificados = $empleados->merge($admins);
@@ -128,6 +130,7 @@ public function storeCita(Request $request)
         $usuario->notify(new \App\Notifications\NuevaCita(
             $agenda,
             $usuario,
+            $tipo,
             ['database', 'broadcast']
         ));
     }
@@ -173,8 +176,8 @@ public function storeCita(Request $request)
 
         if($request->idEstado == 1){
                 // Obtener los datos del cliente y del empleado
-    $cliente = User::findOrFail($request->idEmpleado);
-    $empleado = User::findOrFail($request->idCliente);
+    $cliente = User::findOrFail($request->idCliente);
+    $empleado = User::findOrFail($request->idEmpleado);
 
     $agenda->update([
         'idEstado' => 2,
@@ -233,8 +236,9 @@ public function accept(Request $request, $id)
     ]);
 
     // Obtener los datos del cliente y del empleado
-    $cliente = User::findOrFail($request->idEmpleado);
-    $empleado = User::findOrFail($request->idCliente);
+    $cliente = User::findOrFail($request->idCliente);
+    $empleado = User::findOrFail($request->idEmpleado);
+    $tipo = 'citaAceptada';
 
     // Preparar los datos para enviar por correo
     $data = [
@@ -246,6 +250,13 @@ public function accept(Request $request, $id)
 
     // Enviar el correo
     Mail::to($cliente->email)->send(new CitaConfirmada($data));
+
+    $cliente->notify(new \App\Notifications\NuevaCita(
+        $agenda,
+        $cliente,
+        $tipo,
+        ['database', 'broadcast']
+    ));
     
 
     return redirect()->back()->with('success', 'Estado del evento actualizado con éxito.');
@@ -283,6 +294,46 @@ public function show($id)
             'idEstado' => $agenda->idEstado,
         ],
         'tiposEvento' => $tiposEvento,
+    ]);
+}
+
+
+public function showCita($id)
+{
+    // Obtener el evento y las relaciones necesarias
+    $agenda = Agenda::with(['cliente', 'empleado', 'tipoEvento', 'estado'])->findOrFail($id);
+
+    // Obtener el usuario autenticado
+    $user = auth()->user();
+
+    // Verificar si el usuario es administrador o cliente, y si tiene acceso al evento
+    $puedeAcceder = ($user->id == $agenda->idCliente);
+
+    if (!$puedeAcceder) {
+        abort(403, 'No tienes permiso para acceder a este evento.');
+    }
+
+    // Obtener tipos de eventos
+    $tiposEvento = TipoEvento::all();
+
+    // Obtener usuarios con el rol de 'empleado'
+    $empleados = User::role('empleado')
+    ->get(['id', 'name', 'lastname']); // Filtramos usuarios con rol 'empleado'
+
+    // Retornar datos para el componente
+    return inertia('Agenda/ShowCita', [
+        'currentEvent' => [
+            'id' => $agenda->id,
+            'title' => $agenda->titulo,
+            'descripcion' => $agenda->descripcion,
+            'start' => $agenda->fecha,
+            'idTipoEvento' => $agenda->idTipoEvento,
+            'idEmpleado' => $agenda->idEmpleado,
+            'idCliente' => $agenda->idCliente,
+            'idEstado' => $agenda->idEstado,
+        ],
+        'tiposEvento' => $tiposEvento,
+        'empleados' => $empleados,  // Pasamos los empleados filtrados
     ]);
 }
 

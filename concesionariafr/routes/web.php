@@ -79,6 +79,8 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
 
 });
 
+Route::get('/showCita/{id}', [AgendaController::class, 'showCita'])->name('agenda.show');
+
 Route::post('/agenda/storeCita', [AgendaController::class, 'storeCita'])->name('agenda.storeCita')->middleware('role:cliente|admin');;
 
 Route::group(['middleware' => ['role:admin']], function () {
@@ -98,6 +100,6 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
 Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes']);
 
 Route::put('/notificacion/{id}', [NotificacionController::class, 'notificacion'])->name('notificacion');
-
+Route::put('/citaAceptada/{id}', [NotificacionController::class, 'citaAceptada'])->name('citaAceptada');
 
 require __DIR__.'/auth.php';
