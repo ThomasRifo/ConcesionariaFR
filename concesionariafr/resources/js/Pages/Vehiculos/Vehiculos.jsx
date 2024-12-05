@@ -265,6 +265,7 @@ const Vehiculos = ({
                                                 marca: vehiculo.marca,
                                                 modelo: vehiculo.modelo,
                                                 anio: vehiculo.anio,
+                                                favoritos: favoritos,
                                             })}
                                             className="block"
                                         >

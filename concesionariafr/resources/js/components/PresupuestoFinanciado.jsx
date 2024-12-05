@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 
 export default function Presupuesto({ vehiculo, monto, cuotas, cuotaFija, tasa, lineaFinanciamiento }) {
 
-    const saldoCancelar = vehiculo.precio - monto;
+    const saldoCancelar = vehiculo.precio*1.004 - monto;
     const formatPrecio = (precio) => {
         return new Intl.NumberFormat('es-ES').format(precio);
     };
@@ -17,14 +17,25 @@ export default function Presupuesto({ vehiculo, monto, cuotas, cuotaFija, tasa, 
     return (
         <>
             <div>
-                <h2>{vehiculo.marca} </h2>
-                <p>Precio del vehículo: <strong className='text-lg'> $ {formatPrecio(vehiculo.precio)}</strong></p>
-                <p>Capital a financiar: <strong className='text-lg' >- $ {formatPrecio(monto)} </strong></p>
-                <p>Cuota fija mensual: <strong > $ {formatPrecio(cuotaFija)} </strong></p>
-                <p>Meses del prestamo: <strong > {cuotas} </strong></p>
-                <p>TNA: <strong>{tasa}% </strong></p>
-                <p>Saldo a cancelar: <strong className='text-xl'> ${formatPrecio(saldoCancelar)}</strong> </p>
-
+            <h2 className="text-2xl font-bold mt-2">
+                    {vehiculo.marca} {vehiculo.modelo}
+                </h2>
+                <p>
+                    {" "}
+                    {vehiculo.anio} | Usado | {vehiculo.combustible} |{" "}
+                    {vehiculo.transmision}{" "}
+                </p>
+                <div className='mt-6 px-2'>
+                <div className="mt-4  text-lg flex justify-between border-b-2 pb-4 border-gray-100">Precio del vehículo: <p className='text-xl font-black'> $ {formatPrecio(vehiculo.precio)}</p></div>
+                <div className="mt-4  text-lg flex justify-between pb-4 border-b-2 border-gray-100">
+                    Gastos de entrega <strong className='text-lg' >- $ {formatPrecio(vehiculo.precio*0.04)} </strong></div>
+                <div className="mt-4  text-lg flex justify-between">Capital a financiar: <strong className='text-xl' >- $ {formatPrecio(monto)} </strong></div>
+                <div className="mt-4 text-gray-400  text-base flex justify-between">Cuota fija mensual: <p > $ {formatPrecio(cuotaFija)} </p></div>
+                <div className="mt-4 text-gray-400 text-base flex justify-between">Meses del prestamo: <p > {cuotas} </p></div>
+                <div className="mt-4 text-gray-400 text-base flex justify-between pb-4 border-b-2 border-gray-100">TNA: <p>{tasa}% </p></div>
+                <div className="mt-4  text-lg flex justify-between">Saldo a cancelar: <strong className='text-xl'> ${formatPrecio(saldoCancelar)}</strong> </div>
+                </div>
+                <div className="flex space-x-6 mt-12 flex-col sm:flex-row  ">
                 {user ? (
             <PDFDownloadLink
                 document={<FinanciacionPDF vehiculo={vehiculo} user={user}                   monto={monto} 
@@ -36,18 +47,19 @@ export default function Presupuesto({ vehiculo, monto, cuotas, cuotaFija, tasa, 
                 />}
 
                 fileName={`${vehiculo.marca}-${vehiculo.modelo}-${dayjs().format('YYYY-MM-DD')}.pdf`}
-                className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full text-center hover:bg-red-700 block"
+                className="mt-8 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all m-auto"
             >
-                {({ loading }) => (loading ? 'Cargando documento...' : 'Presupuestar auto')}
+                {({ loading }) => (loading ? 'Cargando documento...' : 'Descargar presupuesto')}
             </PDFDownloadLink>
         ) : (
             <Link
                 href={route('login')}
-                className="mt-3 bg-[#800000] text-white py-2 px-4 rounded-md w-full text-center hover:bg-red-700 block"
+                className="mt-8 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all m-auto"
             >
                 Iniciar sesión para descargar el presupuesto detallado
             </Link>
         )}
+        </div>
 
 
                 <div className="flex space-x-4">

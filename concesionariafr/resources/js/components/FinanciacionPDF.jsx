@@ -70,7 +70,7 @@ export default function FinanciacionPDF({
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.section}>
-                    <Text style={styles.title}>Presupuesto de Financiación</Text>
+                    <Text style={styles.title}>Simulación de financiación</Text>
                     <Text>Cliente: {user.name}</Text>
                     <Text>Vehículo: {vehiculo.marca} {vehiculo.modelo}</Text>
                     <Text>Precio: $ {new Intl.NumberFormat('es-ES').format(vehiculo.precio)}</Text>

@@ -121,6 +121,13 @@ public function show($marca, $modelo, $anio)
 
     $vehiculo->increment('cantidadVistas');
 
+    $favoritos = [];
+    if (Auth::check()) {
+        $favoritos = AutosCliente::where('idCliente', Auth::id())
+            ->pluck('idVehiculo')
+            ->toArray(); // Extraer los IDs de los vehículos favoritos
+    }
+
     $vehiculoDetalle = [
         'id' => $vehiculo->id,
         'marca' => $vehiculo->marca,
@@ -135,6 +142,7 @@ public function show($marca, $modelo, $anio)
         'combustible' => $vehiculo->combustible ? $vehiculo->combustible->tipo : 'No especificado',
         'transmision' => $vehiculo->transmision ? $vehiculo->transmision->tipo : 'No especificada',
         'imagenes' => $vehiculo->imagenes,
+        
     ];
 
     $lineasFinanciamiento = LineaFinanciamiento::with('cuotas')->get();
@@ -142,6 +150,7 @@ public function show($marca, $modelo, $anio)
     return Inertia::render('Vehiculos/VehiculoDetalle', [
         'vehiculo' => $vehiculoDetalle,
         'lineasFinanciamiento' => $lineasFinanciamiento,
+        'favoritos' => $favoritos,
     ]);
 }
 

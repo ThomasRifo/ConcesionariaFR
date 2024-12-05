@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
+import React, { useState } from "react";
+import Modal from "react-modal";
 import Financiacion from "@/components/Financiacion";
 
 export default function Presupuesto({ vehiculo, lineasFinanciamiento }) {
@@ -7,21 +7,48 @@ export default function Presupuesto({ vehiculo, lineasFinanciamiento }) {
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
     const formatPrecio = (precio) => {
-        return new Intl.NumberFormat('es-ES').format(precio);
+        return new Intl.NumberFormat("es-ES").format(precio);
     };
 
     return (
         <>
             <div>
-                <p><strong>Precio del vehículo: $ </strong>{formatPrecio(vehiculo.precio)}</p>
-                <p><strong>Saldo a cancelar: $ </strong>{formatPrecio(vehiculo.precio)}</p>
+                <h2 className="text-2xl font-bold mt-2">
+                    {vehiculo.marca} {vehiculo.modelo}
+                </h2>
+                <p>
+                    {" "}
+                    {vehiculo.anio} | Usado | {vehiculo.combustible} |{" "}
+                    {vehiculo.transmision}{" "}
+                </p>
 
-                <div className="flex space-x-4">
-                    <button 
-                        onClick={openModal} 
-                        className="mt-4 bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white py-2 px-4 w-full rounded-md"
+                <p className="mt-4  text-lg flex justify-between px-6">
+                    Precio del vehículo:
+                    <strong className="text-xl">{`$ ${formatPrecio(
+                        vehiculo.precio
+                    )}`}</strong>
+                </p>
+
+                <p className="mt-4  text-lg flex justify-between px-6">
+                    Gastos de entrega
+                    <strong className="text-xl">{`$ ${formatPrecio(
+                        vehiculo.precio*0.04
+                    )}`}</strong>
+                </p>
+
+                <p className="mt-4  text-lg flex justify-between px-6">
+                    Saldo a cancelar
+                    <strong className="text-2xl">{`$ ${formatPrecio(
+                        vehiculo.precio*1.04
+                    )}`}</strong>
+                </p>
+
+                <div className="flex space-x-6 mt-12 flex-col sm:flex-row  ">
+                    <button
+                        onClick={openModal}
+                        className="mt-8 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all m-auto"
                     >
-                        ¿Querés financiar?
+                        <strong className="text-lg">¿Querés financiar?</strong>
                     </button>
                 </div>
             </div>
@@ -31,17 +58,34 @@ export default function Presupuesto({ vehiculo, lineasFinanciamiento }) {
                 onRequestClose={closeModal}
                 contentLabel="Financiación"
                 ariaHideApp={false}
-                className="p-8 max-w-4xl mx-auto my-32 border-gray-400 border-2 bg-white"
+                className="p-8 max-w-4xl mx-auto my-64 border-gray-400 border-2 bg-white"
             >
-                <h2 className="text-2xl font-bold mb-4">Elegí tu línea financiera</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                    Elegí tu línea financiera
+                </h2>
 
-                <Financiacion vehiculo={vehiculo} lineasFinanciamiento={lineasFinanciamiento} />
+                <Financiacion
+                    vehiculo={vehiculo}
+                    lineasFinanciamiento={lineasFinanciamiento}
+                />
 
-                <button 
-                    onClick={closeModal} 
-                    className="flex items-center text-blue-600 hover:text-blue-700 mt-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                <button
+                    onClick={closeModal}
+                    className="flex items-center text-blue-600 hover:text-blue-700 mt-4"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 9l-7 7-7-7"
+                        />
                     </svg>
                     Volver
                 </button>

@@ -65,27 +65,30 @@ const VehiculoFinanciado = ({ monto, cuotas, tasa, lineaFinanciamiento, vehiculo
 
     return (
         <div>
-            <h2 className="text-xl font-semibold m-auto">Resumen de la financiación</h2>
+            <div className="mt-1 pb-6 text-lg flex justify-between"> 
+            <h2 className="text-2xl font-semibold m-auto">Resumen de la financiación</h2>
             <button onClick={onClose} className="text-sm text-red-500">Cerrar</button>
-
+</div>
             <div className="mt-4">
                 <h2 className="font-medium text-xl">Detalles</h2>
-                <ul className="m-4">
-                    <li className="pt-2"><strong>{lineaFinanciamiento.nombre}</strong> </li>
-                    <li className="pt-2">Monto a financiar: <strong className="text-lg m-6">${formatPrecio(monto)}</strong></li>
-                    <li className="pt-2">Cuota Mensual Fija: <strong>${formatPrecio(cuotaFija.toFixed(2))}</strong> </li>
-                    <li className="pt-2">Cuotas del prestamo: {cuotas} meses</li>
-                    <li className="pt-2">Tasa de Interés Anual: {tasa}%</li>
-                    <li className="pt-2">Entidad: {lineaFinanciamiento.entidad}</li>
-                </ul>
+                <div className="m-4 ">
+                    <p className="mt-4  text-lg flex justify-between "><strong>{lineaFinanciamiento.nombre}</strong> </p>
+                    <div className="mt-4 bg-gray-200 h-14 items-center rounded-md text-lg flex justify-between px-6">Monto a financiar: <strong className="text-2xl">${formatPrecio(monto)}</strong></div>
+                    <p className="mt-4  text-lg flex justify-between ">Cuota Mensual Fija: <strong className="text-xl">${formatPrecio(cuotaFija.toFixed(2))}</strong> </p>
+                    <div className="mt-4  text-lg flex justify-between"><div>Cuotas del prestamo:</div> {cuotas} meses</div>
+                    <div className="mt-4  text-lg flex justify-between"><div>Tasa de Interés Anual:</div> {tasa}%</div>
+                    <div className="mt-4  text-lg flex justify-between"><div>Entidad:</div> {lineaFinanciamiento.entidad}</div>
+                </div>
             </div>
 
-            <button 
-                onClick={openModal}
-                className="mt-4 p-2 bg-blue-500 text-white rounded-md"
-            >
-                Calcular financiamiento
-            </button>
+            <div className="flex space-x-6 mt-12 flex-col sm:flex-row  ">
+                <button
+                    onClick={openModal}
+                    className="mt-8 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all m-auto"
+                >
+                    Calcular financiamiento
+                </button>
+            </div>
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
