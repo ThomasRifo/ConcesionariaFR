@@ -52,7 +52,7 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favori
             <NavbarClient isBlackBg={true} />
 
             {/* Contenedor principal */}
-            <div className="mt-36 container mx-auto px-6 lg:px-12 space-y-12">
+            <div className="mt-36 container my-12 mx-auto px-6 lg:px-12 space-y-12">
                 {/* Sección superior */}
                 <div className="flex flex-col lg:flex-row lg:space-x-16">
                     {/* Imagen del vehículo */}

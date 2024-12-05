@@ -8,7 +8,7 @@ export default function Footer() {
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <h3 className="text-xl font-semibold mb-4">AutoCity</h3>
+                        <h3 className="text-xl font-semibold mb-4">ConcesionariaFR</h3>
                         <p className="text-sm flex items-center">
                             <PhoneIcon className="h-5 w-5 mr-2" />
                             0810 888 4000
@@ -29,7 +29,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="text-xl font-semibold mb-4">Seguinos!</h3>
+                        <h3 className="text-xl font-semibold mb-4">Seguinos en redes</h3>
                         <div className="flex space-x-4">
                             <a href="https://www.facebook.com" className="text-xl hover:text-blue-600">
                                 <FaFacebookF className="h-6 w-6" />
