@@ -58,5 +58,10 @@ public function imagenPrincipal()
     {
         return $this->belongsTo(Transmision::class, 'idTransmision');
     }
+
+    public function autosCliente()
+{
+    return $this->hasMany(AutosCliente::class, 'idVehiculo');
+}
 }
 

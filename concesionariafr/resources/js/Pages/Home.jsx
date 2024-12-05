@@ -2,6 +2,8 @@ import { Head, Link } from '@inertiajs/react';
 import NavbarClient from '@/Layouts/NavbarClient';
 
 export default function Welcome({ vehiculos }) {
+
+
     return (
         <>
             <Head title="Vehículos" />

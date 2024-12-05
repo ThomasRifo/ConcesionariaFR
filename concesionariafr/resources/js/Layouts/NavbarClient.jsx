@@ -97,14 +97,19 @@ const Navbar = ({ isBlackBg }) => {
 
                                 <Dropdown.Content>
                                     <Dropdown.Link href={route("profile.edit")}>
-                                        Profile
+                                        Editar Perfil
+                                    </Dropdown.Link>
+                                    <Dropdown.Link
+                                        href={route("favoritos.list")}
+                                    >
+                                        Favoritos
                                     </Dropdown.Link>
                                     <Dropdown.Link
                                         href={route("logout")}
                                         method="post"
                                         as="button"
                                     >
-                                        Log Out
+                                        Cerrar Sesión
                                     </Dropdown.Link>
                                 </Dropdown.Content>
                             </Dropdown>

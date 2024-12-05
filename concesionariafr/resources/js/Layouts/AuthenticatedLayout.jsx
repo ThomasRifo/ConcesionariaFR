@@ -4,11 +4,13 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
+import DropdownIcon from "@/components/DropdownIcon";
 
 export default function Authenticated({ header, children }) {
     const user = usePage().props.auth.user;
     const isAdmin = user.roles.some((role) => role.name == "admin");
     const isEmpleado = user.roles.some((role) => role.name == "empleado");
+    
 
     const isAnyLinkActiveEmpleados = () => {
         return (
@@ -188,11 +190,17 @@ export default function Authenticated({ header, children }) {
                             </div>
                         </div>
 
+
+                     
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
+                            <div className="h-16">
+                        <DropdownIcon></DropdownIcon>
+                        </div>
                             <div className="ms-3 relative">
                                 <Dropdown>
                                     <Dropdown.Trigger>
                                         <span className="inline-flex rounded-md">
+
                                             <button
                                                 type="button"
                                                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"

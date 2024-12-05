@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AutosCliente;
 use App\Models\Vehiculo;
 use App\Models\categoriaVehiculo;
 use App\Models\Combustible;
@@ -9,6 +10,7 @@ use App\Models\Transmision;
 use App\Models\LineaFinanciamiento;
 use App\Models\estadoVehiculo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,15 +18,28 @@ use Inertia\Response;
 class VehiculoController extends Controller
 {
 
+
+
     public function index()
     {
+        // Obtener todos los vehículos con relaciones necesarias
         $vehiculos = Vehiculo::with('imagenes')->get();
+    
+        // Obtener IDs de vehículos favoritos del usuario autenticado
+        $favoritos = [];
+        if (Auth::check()) {
+            $favoritos = AutosCliente::where('idCliente', Auth::id())
+                ->pluck('idVehiculo')
+                ->toArray(); // Extraer los IDs de los vehículos favoritos
+        }
+    
+        // Cargar los datos necesarios para la vista
         $marcas = Vehiculo::select('marca')->distinct()->get();
         $modelos = Vehiculo::select('modelo')->distinct()->get();
         $categorias = categoriaVehiculo::all();
         $combustibles = Combustible::all();
         $transmisiones = Transmision::all();
-
+    
         return Inertia::render('Vehiculos/Vehiculos', [
             'vehiculos' => $vehiculos,
             'marcas' => $marcas,
@@ -32,13 +47,10 @@ class VehiculoController extends Controller
             'categorias' => $categorias,
             'combustibles' => $combustibles,
             'transmisiones' => $transmisiones,
+            'favoritos' => $favoritos, // Pasar los IDs de favoritos al frontend
         ]);
     }
-
-    public function destacados() {
-        $vehiculos = Vehiculo::with('imagenes')->get();
-        return Inertia::render('home', ['vehiculos' => $vehiculos]);
-    }
+    
     
 
     public function create()

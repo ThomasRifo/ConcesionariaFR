@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\AutosClienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\VehiculoController;
 use App\Models\AutosCliente;
 use App\Models\Vehiculo;
@@ -28,11 +29,11 @@ Route::get('/', function () {
 
 // Ruta dashboard
 Route::get('/dashboard', function () {
-    if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('empleado') || auth()->user()->hasRole('cliente')) {
+    if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('empleado')) {
         return Inertia::render('Dashboard');
     }
     return Inertia::render('register') ;
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['role:empleado|admin'])->name('dashboard');
 
 // Rutas protegidas para perfiles
 Route::group(['middleware' => ['role:empleado|admin|cliente']], function () {
@@ -58,7 +59,7 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
 
 Route::post('/favoritos/add', [AutosClienteController::class, 'store'])->name('favoritos.add');
 Route::delete('/favoritos/remove', [AutosClienteController::class, 'destroy'])->name('favoritos.remove');
-Route::get('/favoritos/list', [AutosClienteController::class, 'index'])->name('favoritos.list');
+Route::get('/favoritos/list', [AutosClienteController::class, 'favoritos'])->name('favoritos.list');
 
 
 Route::group(['middleware' => ['role:admin|empleado']], function () {
@@ -73,10 +74,11 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
     Route::get('/agenda/buscar-clientes', [AgendaController::class, 'buscarClientes']);
     Route::put('/agenda/delete/{id}', [AgendaController::class, 'delete'])->name('agenda.delete');
     Route::put('/agenda/aceptar/{id}', [AgendaController::class, 'accept'])->name('agenda.accept');
+    Route::get('/agenda/show/{id}', [AgendaController::class, 'show'])->name('agenda.show');
 
 });
 
-Route::post('/agenda/storeCita', [AgendaController::class, 'storeCita'])->name('agenda.storeCita')->middleware('role:cliente');;
+Route::post('/agenda/storeCita', [AgendaController::class, 'storeCita'])->name('agenda.storeCita')->middleware('role:cliente|admin');;
 
 Route::group(['middleware' => ['role:admin']], function () {
     Route::get('/empleados', [EmpleadoController::class, 'index'])->name('empleados.index');
@@ -87,5 +89,8 @@ Route::group(['middleware' => ['role:admin']], function () {
 });
 
 Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes']);
+
+Route::put('/notificacion/{id}', [NotificacionController::class, 'notificacion'])->name('notificacion');
+
 
 require __DIR__.'/auth.php';

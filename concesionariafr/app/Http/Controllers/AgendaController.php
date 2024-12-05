@@ -13,6 +13,9 @@ use Inertia\Response;
 use App\Mail\CitaConfirmada;
 use App\Mail\CitaReprogramada;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\NewNotification;
+use Illuminate\Notifications\Notification;
+use Spatie\Permission\Contracts\Role;
 
 class AgendaController extends Controller
 {
@@ -90,32 +93,49 @@ class AgendaController extends Controller
     return Inertia::render('Agenda')->with('success', 'Evento creado con éxito.');
 }
 
-    public function storeCita(Request $request)
-    {
-        // Validar los campos
-        $request->validate([
-            'fecha' => 'required|date',
-            'idCliente' => 'required|exists:users,id',
-            'idEmpleado'=> 'required|exists:users,id',
-            'idTipoEvento' => 'required|exists:tipo_evento,id',
-            'idEstado' => 'required|exists:estado_evento,id',
-            'titulo' => 'required|string|max:255', // Agregar validación para el título
-            'descripcion' => 'required|string|max:1000', // Agregar validación para la descripción
-        ]);
-    
-        // Crear el evento en la tabla 'agenda'
-        $agenda = Agenda::create([
-            'titulo' => $request->titulo, // Usar el título del formulario
-            'descripcion' => $request->descripcion, // Usar la descripción del formulario
-            'fecha' => $request->fecha,
-            'idTipoEvento' => $request->idTipoEvento,
-            'idEmpleado' => $request->idEmpleado, // Cambia esto si necesitas usar otro id
-            'idCliente' => Auth::user()->id,
-            'idEstado' => $request->idEstado,
-        ]);
-    
-        return Inertia::render('vehiculos.index')->with('success', 'Evento creado con éxito.');
+public function storeCita(Request $request)
+{
+    // Validar los campos
+    $request->validate([
+        'fecha' => 'required|date',
+        'idCliente' => 'required|exists:users,id',
+        'idEmpleado'=> 'required|exists:users,id',
+        'idTipoEvento' => 'required|exists:tipo_evento,id',
+        'idEstado' => 'required|exists:estado_evento,id',
+        'titulo' => 'required|string|max:255',
+        'descripcion' => 'required|string|max:1000',
+    ]);
+
+    // Crear el evento en la tabla 'agenda'
+    $agenda = Agenda::create([
+        'titulo' => $request->titulo,
+        'descripcion' => $request->descripcion,
+        'fecha' => $request->fecha,
+        'idTipoEvento' => $request->idTipoEvento,
+        'idEmpleado' => $request->idEmpleado,
+        'idCliente' => Auth::user()->id,
+        'idEstado' => $request->idEstado,
+    ]);
+
+    $empleados = User::role('empleado')->get(); // Spatie role permission
+    $admins = User::role('admin')->get();       // Spatie role permission
+
+    // Combinar empleados y admins
+    $usuariosNotificados = $empleados->merge($admins);
+
+    // Enviar notificación a cada usuario
+    foreach ($usuariosNotificados as $usuario) {
+        $usuario->notify(new \App\Notifications\NuevaCita(
+            $agenda,
+            $usuario,
+            ['database', 'broadcast']
+        ));
     }
+
+
+
+    return redirect()->route('vehiculos.index')->with('success', 'Evento creado con éxito.');
+}
 
     public function buscarClientes(Request $request)
     {
@@ -209,7 +229,7 @@ public function accept(Request $request, $id)
     // Actualizar el estado
     $agenda->update([
         'idEstado' => 3,
-        'idEmpleado' => $request->idEmpleado,
+        'idEmpleado' => $request->user()->id,
     ]);
 
     // Obtener los datos del cliente y del empleado
@@ -226,7 +246,46 @@ public function accept(Request $request, $id)
 
     // Enviar el correo
     Mail::to($cliente->email)->send(new CitaConfirmada($data));
+    
 
     return redirect()->back()->with('success', 'Estado del evento actualizado con éxito.');
 }
+
+public function show($id)
+{
+    // Obtener el evento y las relaciones necesarias
+    $agenda = Agenda::with(['cliente', 'empleado', 'tipoEvento', 'estado'])->findOrFail($id);
+
+    // Obtener el usuario autenticado
+    $user = auth()->user();
+
+    // Verificar si el usuario es administrador o cliente, y si tiene acceso al evento
+    $puedeAcceder = ($user->hasRole('admin') || $user->hasRole('empleado')) ;
+
+
+    if (!$puedeAcceder) {
+        abort(403, 'No tienes permiso para acceder a este evento.');
+    }
+
+    // Obtener tipos de eventos
+    $tiposEvento = TipoEvento::all();
+
+    // Retornar datos para el componente
+    return inertia('Agenda/AgendaShow', [
+        'currentEvent' => [
+            'id' => $agenda->id,
+            'title' => $agenda->titulo,
+            'descripcion' => $agenda->descripcion,
+            'start' => $agenda->fecha,
+            'idTipoEvento' => $agenda->idTipoEvento,
+            'idEmpleado' => $agenda->idEmpleado,
+            'idCliente' => $agenda->idCliente,
+            'idEstado' => $agenda->idEstado,
+        ],
+        'tiposEvento' => $tiposEvento,
+    ]);
+}
+
+
+
 }

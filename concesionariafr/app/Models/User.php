@@ -61,4 +61,22 @@ class User extends Authenticatable
         return $this->hasMany(Venta::class, 'idEmpleado');
     }
 
+    public function autosGuardados()
+    {
+        return $this->hasMany(AutosCliente::class, 'idCliente');
+    }
+
+    // Opción para acceder directamente a los vehículos relacionados
+    public function vehiculosFavoritos()
+    {
+        return $this->hasManyThrough(
+            Vehiculo::class, 
+            AutosCliente::class, 
+            'idCliente', // Foreign key en AutosCliente
+            'id',        // Foreign key en Vehiculo
+            'id',        // Local key en User
+            'idVehiculo' // Local key en AutosCliente
+        );
+    }
+
 }

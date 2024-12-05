@@ -4,8 +4,11 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import Presupuesto from "@/components/Presupuesto";
 import AgendarCita from "../Agenda/AgendarCita";
-
+import Pusher from 'pusher-js';
 export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento }) {
+
+
+
     const [modalIsOpen1, setModalIsOpen1] = useState(false);
     const [modalIsOpen2, setModalIsOpen2] = useState(false);
 
@@ -14,6 +17,8 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento }) {
 
     const openModal2 = () => setModalIsOpen2(true);
     const closeModal2 = () => setModalIsOpen2(false);
+
+    console.log(vehiculo)
 
     return (
         <>
