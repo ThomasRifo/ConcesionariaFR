@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import NavbarClient from "@/Layouts/NavbarClient";
+import Footer from "@/Layouts/Footer";
 
 const VehiculosGuardados = ({ vehiculos,     combustibles,
     transmisiones,}) => {
@@ -31,6 +32,7 @@ const VehiculosGuardados = ({ vehiculos,     combustibles,
 
     return (
         <>
+            <div className="flex flex-col min-h-screen">
             <Head title="Favoritos" />
             <NavbarClient isBlackBg={true} />
             <div className="mt-36 container mx-auto px-6 lg:px-12 space-y-12 w-3/5">
@@ -115,6 +117,8 @@ const VehiculosGuardados = ({ vehiculos,     combustibles,
                     <p>No tienes vehículos guardados.</p>
                 )}
             </div>
+            </div>
+            <Footer></Footer>
         </>
     );
 };

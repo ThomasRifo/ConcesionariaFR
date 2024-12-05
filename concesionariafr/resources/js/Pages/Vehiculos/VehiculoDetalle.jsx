@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import Presupuesto from "@/components/Presupuesto";
 import AgendarCita from "../Agenda/AgendarCita";
 import Pusher from 'pusher-js';
+import Footer from "@/Layouts/Footer";
 export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favoritos }) {
 
 
@@ -158,6 +159,7 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favori
                 </h2>
                 <AgendarCita vehiculo={vehiculo} closeModal={closeModal2} />
             </Modal>
+            <Footer></Footer>
         </>
     );
 }

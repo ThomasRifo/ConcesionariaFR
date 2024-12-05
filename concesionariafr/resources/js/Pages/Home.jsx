@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import NavbarClient from '@/Layouts/NavbarClient';
+import Footer from '@/Layouts/Footer';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules'; // Importa módulos necesarios
 import 'swiper/css'; // Estilos básicos
@@ -28,14 +29,12 @@ export default function Welcome({ vehiculos }) {
                     <p>en nuestra variedad de vehículos</p>
                 </div>
             </div>
-
-            {/* Contenedor de vehículos con carrusel */}
             <div className="container mx-auto my-12 px-4">
-                <h2 className="text-3xl font-bold mb-6 text-center">Nuestros Vehículos</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center font-autocity">Nuestra variedad de vehiculos</h2>
                 <Swiper
                     modules={[Navigation, Pagination]} // Activa módulos
-                    spaceBetween={20} // Espacio entre slides
-                    slidesPerView={1} // Slides visibles
+                    spaceBetween={30} // Espacio entre slides
+                    slidesPerView={4} // Slides visibles
                     breakpoints={{
                         640: { slidesPerView: 2 },
                         768: { slidesPerView: 3 },
@@ -82,6 +81,7 @@ export default function Welcome({ vehiculos }) {
                     ))}
                 </Swiper>
             </div>
+            <Footer></Footer>
         </>
     );
 }

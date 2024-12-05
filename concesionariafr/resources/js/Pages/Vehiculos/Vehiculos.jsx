@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Head, usePage, Link } from "@inertiajs/react";
 import NavbarClient from "@/Layouts/NavbarClient";
+import Footer from "@/Layouts/Footer";
 
 const Vehiculos = ({
     vehiculos,
@@ -288,6 +289,7 @@ const Vehiculos = ({
                     </div>
                 </div>
             </div>
+            <Footer></Footer>
         </>
     );
 };
