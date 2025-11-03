@@ -22,9 +22,16 @@ class Vehiculo extends Model
     'anio',
     'precio',
     'patente',
+    'vin',
+    'pais_origen',
+    'tipo_motor',
+    'cilindrada',
+    'potencia',
+    'num_puertas',
     'color',
     'kilometraje',
     'idEstado',
+    'detalles',
     ];
 
     // Define las relaciones, si corresponde

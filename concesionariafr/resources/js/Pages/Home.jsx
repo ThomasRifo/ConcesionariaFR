@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import NavbarClient from '@/Layouts/NavbarClient';
 import Footer from '@/Layouts/Footer';
+import GoogleMap from '@/Components/GoogleMap';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules'; // Importa módulos necesarios
 import 'swiper/css'; // Estilos básicos
@@ -95,6 +96,17 @@ export default function Welcome({ vehiculos }) {
                         </SwiperSlide>
                     ))}
                 </Swiper>
+            </div>
+            {/* Mapa de ubicación del concesionario */}
+            <div className="container mx-auto px-4 mb-12">
+                <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Dónde estamos</h2>
+                <GoogleMap
+                    lat={-38.9516}
+                    lng={-68.0591}
+                    zoom={14}
+                    markerTitle="Concesionaria FR"
+                    height="380px"
+                />
             </div>
             <Footer></Footer>
         </>

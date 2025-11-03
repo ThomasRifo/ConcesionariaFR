@@ -1,9 +1,11 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import PrimaryButton from '@/Components/PrimaryButton'; // Componente personalizado
-import TextInput from '@/Components/TextInput'; // Componente personalizado
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import GuestLayout2 from "@/Layouts/GuestLayout2";
+import SearchVin from '@/Components/SearchVin';
+import CamposExtras from '@/Components/CamposExtras';
 
 const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
     const { data, setData, post, errors } = useForm({
@@ -15,13 +17,24 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
         anio: '',
         precio: '',
         patente: '',
+        vin: '',
+        pais_origen: '',
+        tipo_motor: '',
+        cilindrada: '',
+        potencia: '',
+        num_puertas: '',
         color: '',
         kilometraje: '',
+        detalles: '',
         imagen: null,
     });
 
     const handleFileChange = (e) => {
         setData('imagen', e.target.files[0]);
+    };
+
+    const handleVinChange = (newVin) => {
+        setData('vin', newVin);
     };
 
     const submit = (e) => {
@@ -43,6 +56,15 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-lg">
                         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Registro Vehiculos</h2>
                         <form onSubmit={submit} className="space-y-6" method='POST' encType='multipart/form-data'>
+
+                            {/* Componente de búsqueda VIN */}
+                            <SearchVin
+                                vin={data.vin}
+                                onVinChange={handleVinChange}
+                                onDataReceived={setData}
+                            />
+
+
                             {/* Select de Categoría */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Categoría</label>
@@ -101,7 +123,7 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Marca</label>
                                 <TextInput
-                                    value={data.marca}
+                                    value={data.marca || ''}
                                     onChange={(e) => setData('marca', e.target.value)}
                                     className="mt-2 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                 />
@@ -137,7 +159,12 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                                 />
                                 {errors.precio && <span className="text-red-500 text-sm">{errors.precio}</span>}
                             </div>
-
+                            {/* Componente de campos extras */}
+                            <CamposExtras
+                                data={data}
+                                setData={setData}
+                                errors={errors}
+                            />
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Patente</label>
                                 <TextInput
@@ -147,6 +174,8 @@ const CreateVehiculo = ({ categorias, combustibles, transmisiones }) => {
                                 />
                                 {errors.patente && <span className="text-red-500 text-sm">{errors.patente}</span>}
                             </div>
+
+                            
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">Color</label>

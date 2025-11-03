@@ -56,6 +56,7 @@ Route::group(['middleware' => ['role:admin|empleado']], function () {
     Route::get('/vehiculos/edit', [VehiculoController::class, 'edit'])->name('vehiculos.edit');
     Route::put('/vehiculos/{id}', [VehiculoController::class, 'update'])->name('vehiculos.update');
     Route::delete('/vehiculos/{id}', [VehiculoController::class, 'destroy'])->name('vehiculos.destroy');
+    Route::post('/vehiculos/buscar-vin', [VehiculoController::class, 'buscarPorVin'])->name('vehiculos.buscar-vin');
 
 });
 

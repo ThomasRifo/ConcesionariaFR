@@ -9,6 +9,7 @@ use App\Models\Combustible;
 use App\Models\Transmision;
 use App\Models\LineaFinanciamiento;
 use App\Models\estadoVehiculo;
+use App\Services\AutoDevService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -17,13 +18,51 @@ use Inertia\Response;
 
 class VehiculoController extends Controller
 {
+    protected $autoDevService;
 
-
-
-    public function index()
+    public function __construct(AutoDevService $autoDevService)
     {
-        // Obtener todos los vehículos con relaciones necesarias
-        $vehiculos = Vehiculo::with('imagenes')->get();
+        $this->autoDevService = $autoDevService;
+    }
+
+    public function index(Request $request)
+    {
+        // Obtener los parámetros de filtro de la solicitud
+        $searchTerm = $request->input('searchTerm');
+        $selectedMarcas = $request->input('selectedMarcas', []);
+        $selectedModelos = $request->input('selectedModelos', []);
+        $selectedCategoria = $request->input('selectedCategoria');
+        $selectedCombustible = $request->input('selectedCombustible');
+        $selectedTransmision = $request->input('selectedTransmision');
+    
+        // Iniciar la consulta de vehículos
+        $query = Vehiculo::with('imagenes');
+    
+        // Aplicar filtros según los parámetros recibidos
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('marca', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('modelo', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+        if (!empty($selectedMarcas)) {
+            $query->whereIn('marca', $selectedMarcas);
+        }
+        if (!empty($selectedModelos)) {
+            $query->whereIn('modelo', $selectedModelos);
+        }
+        if ($selectedCategoria) {
+            $query->where('idCategoria', $selectedCategoria);
+        }
+        if ($selectedCombustible) {
+            $query->where('idCombustible', $selectedCombustible);
+        }
+        if ($selectedTransmision) {
+            $query->where('idTransmision', $selectedTransmision);
+        }
+    
+        // Obtener los vehículos filtrados
+        $vehiculos = $query->get();
     
         // Obtener IDs de vehículos favoritos del usuario autenticado
         $favoritos = [];
@@ -79,8 +118,15 @@ class VehiculoController extends Controller
         'anio' => 'required|integer',
         'precio' => 'required|numeric',
         'patente' => 'required|string|max:255',
+        'vin' => 'nullable|string|max:17|unique:vehiculos,vin',
+        'pais_origen' => 'nullable|string|max:50',
+        'tipo_motor' => 'nullable|string|max:50',
+        'cilindrada' => 'nullable|string|max:20',
+        'potencia' => 'nullable|string|max:20',
+        'num_puertas' => 'nullable|integer',
         'color' => 'required|string|max:255',
         'kilometraje' => 'required|integer',
+        'detalles' => 'nullable|string|max:300',
         'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
@@ -93,8 +139,15 @@ class VehiculoController extends Controller
         'anio' => $request->anio,
         'precio' => $request->precio,
         'patente' => $request->patente,
+        'vin' => $request->vin,
+        'pais_origen' => $request->pais_origen,
+        'tipo_motor' => $request->tipo_motor,
+        'cilindrada' => $request->cilindrada,
+        'potencia' => $request->potencia,
+        'num_puertas' => $request->num_puertas,
         'color' => $request->color,
         'kilometraje' => $request->kilometraje,
+        'detalles' => $request->detalles,
         'idEstado' => 1,
     ]);
 
@@ -179,9 +232,16 @@ public function show($marca, $modelo, $anio)
         'modelo' => $request->modelo,
         'anio' => $request->anio,
         'patente' => $request->patente,
+        'vin' => $request->vin ?? $vehiculo->vin,
+        'pais_origen' => $request->pais_origen,
+        'tipo_motor' => $request->tipo_motor,
+        'cilindrada' => $request->cilindrada,
+        'potencia' => $request->potencia,
+        'num_puertas' => $request->num_puertas,
         'color' => $request->color,
         'kilometraje' => $request->kilometraje,
         'precio' => $request->precio,
+        'detalles' => $request->detalles,
         'idCategoria' => $request->idCategoria,
         'idCombustible' => $request->idCombustible,
         'idTransmision' => $request->idTransmision,
@@ -201,6 +261,46 @@ public function show($marca, $modelo, $anio)
 
     return redirect()->route('vehiculos.edit')->with('success', 'Vehículo eliminado exitosamente.');
 
+    }
+
+    /**
+     * Busca información de un vehículo por VIN usando la API de Auto.dev
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function buscarPorVin(Request $request)
+    {
+        $request->validate([
+            'vin' => 'required|string|max:17',
+        ]);
+
+        $vin = strtoupper(trim($request->vin)); // VIN en mayúsculas y sin espacios
+
+        $resultado = $this->autoDevService->decodeVin($vin);
+
+        if (isset($resultado['success']) && !$resultado['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $resultado['error'] ?? 'No se pudo obtener información del vehículo.',
+                'details' => $resultado['response'] ?? null,
+                'status' => $resultado['status'] ?? null,
+            ], $resultado['status'] ?? 500);
+        }
+
+        // Si tiene success true, retornar los datos
+        if (isset($resultado['success']) && $resultado['success']) {
+            unset($resultado['success']); 
+            return response()->json([
+                'success' => true,
+                'data' => $resultado,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $resultado,
+        ]);
     }
 
 }

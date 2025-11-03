@@ -54,4 +54,9 @@ return [
         'headers' => [],
     ],
 
+    'autodev' => [
+        'api_key' => env('AUTO_DEV_API_KEY'),
+        'base_url' => env('AUTO_DEV_BASE_URL', 'https://api.auto.dev'),
+    ],
+
 ];

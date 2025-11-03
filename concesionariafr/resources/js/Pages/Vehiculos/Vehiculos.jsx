@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Head, usePage, Link } from "@inertiajs/react";
 import NavbarClient from "@/Layouts/NavbarClient";
 import Footer from "@/Layouts/Footer";
+import SelectFilter from "@/components/SelectFilter"
+import CheckboxFilter from "@/components/CheckboxFilter"
+import GoogleMap from "@/components/GoogleMap";
 
 const Vehiculos = ({
     vehiculos,
@@ -83,9 +86,15 @@ const Vehiculos = ({
         );
     };
 
+
+    
     const { user } = usePage().props.auth;
 
     const handleAddToFavorites = (vehiculoId) => {
+        if (!user) {
+            window.location.href = route("login"); // Redirige al login si el usuario no está autenticado
+            return null; // Evita renderizar el componente hasta que la redirección se complete
+        }
         axios
             .post(route("favoritos.add"), { vehiculoId, clienteId: user.id })
             .then(() => {
@@ -95,6 +104,10 @@ const Vehiculos = ({
     };
 
     const handleRemoveFromFavorites = (vehiculoId) => {
+
+        if(!user){
+
+        }
         axios
             .delete(route("favoritos.remove"), { data: { vehiculoId, clienteId: user.id } })
             .then(() => {
@@ -110,16 +123,13 @@ const Vehiculos = ({
     return (
         <>
         <Head title="Vehículos" />
-        <NavbarClient />
-        <div className="h-2/3 h-[76vh] overflow-hidden">
-            <img
-                src="https://autocity.com.ar/wp-content/uploads/2022/01/autocity-seis-marcas.jpeg"
-                className="w-full -mt-24 object-cover"
-                alt="Imagen de autos"
-            />
-        </div>
-        <div className="container mx-auto p-6">
-            {/* Buscador */}
+        
+        <NavbarClient isBlackBg={true} />
+        
+        <div className="container mx-auto p-6 mt-36">
+            <h4 className="flex justify-center mb-8 text-3xl font-bold">Encontrá tu próximo auto en nuestro catálogo</h4>
+            {/* Buscador
+            Tengo que convertirlo en componente */}
             <div className="flex justify-center mb-6">
                 <input
                     type="text"
@@ -130,9 +140,11 @@ const Vehiculos = ({
                 />
             </div>
             <div className="flex justify-between space-x-8">
-                {/* Filtros */}
+                {/* Filtros 
+                Tengo que convertirlo en componentes*/}
                 <div className="w-1/4 p-4 bg-white rounded-lg shadow-lg border border-gray-200">
                     <h4 className="font-semibold text-lg mb-3">Filtros</h4>
+                    {/*
                     <div className="mb-4">
                         <h5 className="font-medium">Marcas</h5>
                         {marcas.map((marca) => (
@@ -239,6 +251,41 @@ const Vehiculos = ({
                             ))}
                         </select>
                     </div>
+                    */ }
+                    <CheckboxFilter
+    title="Marcas"
+    options={marcas.map(marca => marca.marca)}
+    selectedOptions={selectedMarcas}
+    setSelectedOptions={setSelectedMarcas}
+/>
+
+<CheckboxFilter
+    title="Modelos"
+    options={modelos.map(modelo => modelo.modelo)}
+    selectedOptions={selectedModelos}
+    setSelectedOptions={setSelectedModelos}
+/>
+
+<SelectFilter
+    title="Categoría"
+    options={categorias}
+    selectedValue={selectedCategoria}
+    setSelectedValue={setSelectedCategoria}
+/>
+
+<SelectFilter
+    title="Combustible"
+    options={combustibles}
+    selectedValue={selectedCombustible}
+    setSelectedValue={setSelectedCombustible}
+/>
+
+<SelectFilter
+    title="Transmisión"
+    options={transmisiones}
+    selectedValue={selectedTransmision}
+    setSelectedValue={setSelectedTransmision}
+/>
                 </div>
 
                 <div className="w-3/4">
@@ -288,6 +335,17 @@ const Vehiculos = ({
                         )}
                     </div>
                 </div>
+            </div>
+                        {/* Mapa de ubicación del concesionario */}
+                        <div className="container mx-auto px-4 mb-12 mt-24">
+                <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Dónde estamos</h2>
+                <GoogleMap
+                    lat={-38.9516}
+                    lng={-68.0591}
+                    zoom={14}
+                    markerTitle="Concesionaria FR"
+                    height="380px"
+                />
             </div>
             <Footer></Footer>
         </>

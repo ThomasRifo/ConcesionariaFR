@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
     }
 
 
-    return redirect()->intended(route('dashboard'));
+    return redirect()->intended(route('agenda.index'));
     }
 
 
@@ -47,6 +47,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('login');
+        return redirect('/');
     }
 }

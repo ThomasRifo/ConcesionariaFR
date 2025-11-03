@@ -7,6 +7,7 @@ import AgendarCita from "../Agenda/AgendarCita";
 import FinanciamientoBanco from "@/components/FinanciamientoBanco";
 import Pusher from 'pusher-js';
 import Footer from "@/Layouts/Footer";
+import GoogleMap from "@/components/GoogleMap";
 export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favoritos }) {
 
 
@@ -165,6 +166,17 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favori
                 </h2>
                 <AgendarCita vehiculo={vehiculo} closeModal={closeModal2} />
             </Modal>
+                                    {/* Mapa de ubicación del concesionario */}
+                                    <div className="container mx-auto px-4 mb-12 mt-24">
+                <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Dónde estamos</h2>
+                <GoogleMap
+                    lat={-38.9516}
+                    lng={-68.0591}
+                    zoom={14}
+                    markerTitle="Concesionaria FR"
+                    height="380px"
+                />
+            </div>
             <Footer></Footer>
         </>
     );
