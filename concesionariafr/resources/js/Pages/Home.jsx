@@ -30,8 +30,23 @@ export default function Welcome({ vehiculos }) {
                     <p>en nuestra variedad de vehículos</p>
                 </div>
             </div>
+
+            <Link
+                href={route("vehiculos.index")}
+            >
+            <div className="w-full px-0 mt-12">
+                <div className="relative">
+                <img 
+                    src="https://assets.static-gm.com/Assets/4094fc05-4ebc-4a4e-8773-5114c565dc62/52cc8a00-df9a-4138-a657-c121052cfa48/v-1697675985/Desktop.webp" 
+                    className="w-full px-80 -mt-26 object-cover" 
+                    alt="Imagen de autos"
+                />
+                </div>
+            </div>
+            </Link>
+
             <div className="container mx-auto my-12 px-4">
-            <h2 className="text-3xl font-bold mb-6 text-center font-autocity">Nuestra variedad de vehiculos</h2>
+            <h2 className="text-4xl mb-12 text-center font-autocity">Nuestros Vehiculos Destacados</h2>
                 <Swiper
                     modules={[Navigation, Pagination]} // Activa módulos
                     spaceBetween={30} // Espacio entre slides
