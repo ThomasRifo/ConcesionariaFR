@@ -112,6 +112,27 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        // Base de datos externa de bancos
+        'bancos' => [
+            'driver' => env('BANCOS_DB_DRIVER', 'mysql'),
+            'url' => env('BANCOS_DB_URL'),
+            'host' => env('BANCOS_DB_HOST', '127.0.0.1'),
+            'port' => env('BANCOS_DB_PORT', '3306'),
+            'database' => env('BANCOS_DB_DATABASE', 'bancos'),
+            'username' => env('BANCOS_DB_USERNAME', 'root'),
+            'password' => env('BANCOS_DB_PASSWORD', ''),
+            'unix_socket' => env('BANCOS_DB_SOCKET', ''),
+            'charset' => env('BANCOS_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('BANCOS_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => env('BANCOS_DB_PREFIX', ''),
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('BANCOS_MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*

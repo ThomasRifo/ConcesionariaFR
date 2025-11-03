@@ -8,6 +8,8 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\VehiculoController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\FinanciamientoBancoController;
+use App\Http\Controllers\BancoSoapServerController;
 use App\Models\AutosCliente;
 use App\Models\Vehiculo;
 use Illuminate\Foundation\Application;
@@ -102,5 +104,17 @@ Route::get('/buscar-clientes', [RegisteredUserController::class, 'buscarClientes
 Route::put('/notificacion/{id}', [NotificacionController::class, 'notificacion'])->name('notificacion');
 Route::put('/citaAceptada/{id}', [NotificacionController::class, 'citaAceptada'])->name('citaAceptada');
 Route::put('/citaReprogramada/{id}', [NotificacionController::class, 'citaReprogramada'])->name('citaReprogramada');
+
+// Rutas para el servidor SOAP del banco (servicio externo simulado)
+Route::get('/soap/banco/wsdl', [BancoSoapServerController::class, 'wsdl'])->name('soap.banco.wsdl');
+Route::match(['get', 'post'], '/soap/banco', [BancoSoapServerController::class, 'serve'])->name('soap.banco.serve');
+
+// Rutas para consultar financiamiento desde banco vía SOAP
+Route::group(['middleware' => ['role:admin|empleado|cliente']], function () {
+    Route::post('/banco/consultar-financiamiento', [FinanciamientoBancoController::class, 'consultarFinanciamiento'])->name('banco.consultar');
+    Route::post('/banco/calcular-cuota', [FinanciamientoBancoController::class, 'calcularCuota'])->name('banco.calcular');
+    Route::post('/banco/validar-elegibilidad', [FinanciamientoBancoController::class, 'validarElegibilidad'])->name('banco.validar');
+    Route::post('/banco/comparar-opciones', [FinanciamientoBancoController::class, 'compararOpciones'])->name('banco.comparar');
+});
 
 require __DIR__.'/auth.php';

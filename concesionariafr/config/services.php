@@ -35,4 +35,23 @@ return [
         ],
     ],
 
+    'soap' => [
+        'wsdl' => env('SOAP_WSDL', null),
+        'location' => env('SOAP_LOCATION', null),
+        'uri' => env('SOAP_URI', null),
+        'options' => [
+            'soap_version' => env('SOAP_VERSION', SOAP_1_2),
+            'trace' => env('SOAP_TRACE', true),
+            'exceptions' => env('SOAP_EXCEPTIONS', true),
+            'cache_wsdl' => env('SOAP_CACHE_WSDL', WSDL_CACHE_NONE),
+            'connection_timeout' => env('SOAP_CONNECTION_TIMEOUT', 30),
+            'user_agent' => env('SOAP_USER_AGENT', 'Laravel SoapClient'),
+        ],
+        'auth' => [
+            'username' => env('SOAP_USERNAME', null),
+            'password' => env('SOAP_PASSWORD', null),
+        ],
+        'headers' => [],
+    ],
+
 ];

@@ -4,6 +4,7 @@ import { Head, usePage, Link } from "@inertiajs/react";
 import Modal from "react-modal";
 import Presupuesto from "@/components/Presupuesto";
 import AgendarCita from "../Agenda/AgendarCita";
+import FinanciamientoBanco from "@/components/FinanciamientoBanco";
 import Pusher from 'pusher-js';
 import Footer from "@/Layouts/Footer";
 export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favoritos }) {
@@ -104,19 +105,24 @@ export default function VehiculoDetalle({ vehiculo, lineasFinanciamiento, favori
                         </div>
 
                         {/* Botones */}
-                        <div className="mt-4 flex flex-col sm:flex-row sm:space-x-4">
-                            <button
-                                onClick={openModal1}
-                                className="w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all"
-                            >
-                                Presupuestar
-                            </button>
-                            <button
-                                onClick={openModal2}
-                                className="mt-4 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all"
-                            >
-                                Agendar Cita
-                            </button>
+                        <div className="mt-4 flex flex-col space-y-3">
+                            <div className="flex flex-col sm:flex-row sm:space-x-4">
+                                <button
+                                    onClick={openModal1}
+                                    className="w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all"
+                                >
+                                    Presupuestar
+                                </button>
+                                <button
+                                    onClick={openModal2}
+                                    className="mt-4 sm:mt-0 w-full sm:w-auto bg-white text-black border border-black py-2 px-6 rounded-md hover:bg-black hover:text-white transition-all"
+                                >
+                                    Agendar Cita
+                                </button>
+                            </div>
+                            <div className="mt-2">
+                                <FinanciamientoBanco vehiculo={vehiculo} />
+                            </div>
                         </div>
                     </div>
                 </div>
