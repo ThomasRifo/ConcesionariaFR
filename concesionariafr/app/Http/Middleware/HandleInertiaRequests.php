@@ -51,7 +51,7 @@ class HandleInertiaRequests extends Middleware
                     : 0,
                     'unreadNotifications' => Auth::check()
                     ? Auth::user()->unreadNotifications
-                    : collect(), // Retorna una colección vacía si no hay usuario
+                    : collect(), 
             ],
             'empleados' => $empleados,
             'ziggy' => fn () => [

@@ -131,7 +131,7 @@ public function storeCita(Request $request)
             $agenda,
             $usuario,
             $tipo,
-            ['database', 'broadcast']
+            app()->environment('local') ? ['database'] : ['database', 'broadcast']
         ));
     }
 
@@ -201,7 +201,7 @@ public function storeCita(Request $request)
         $agenda,
         $cliente,
         $tipo,
-        ['database', 'broadcast']
+        app()->environment('local') ? ['database'] : ['database', 'broadcast']
     ));
     
         return redirect()->route('agenda.index')->with('success', 'Evento actualizado con éxito.');
@@ -241,7 +241,7 @@ public function accept(Request $request, $id)
     // Actualizar el estado
     $agenda->update([
         'idEstado' => 3,
-        'idEmpleado' => $request->user()->id,
+        'idEmpleado' => Auth::user()->id,
     ]);
 
     // Obtener los datos del cliente y del empleado
@@ -264,7 +264,7 @@ public function accept(Request $request, $id)
         $agenda,
         $cliente,
         $tipo,
-        ['database', 'broadcast']
+        app()->environment('local') ? ['database'] : ['database', 'broadcast']
     ));
     
 
